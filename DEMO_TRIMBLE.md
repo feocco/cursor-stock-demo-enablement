@@ -2,7 +2,9 @@
 
 This fork is the **skills-only** harness for Joe Feocco’s Trimble enablement session on nested skills. Nate Lauf’s stock-trading demo stays intact; this file is the live-demo script, not a product rewrite.
 
-**Scope of this repo:** `.cursor/skills`, `.cursor/agents`, and the rules that let a cloud agent run the pipeline without pausing on reversible steps. Do **not** pitch Cursor Projects or pstack from this checkout — those are other topics.
+**Scope of this repo:** `.cursor/skills` and `.cursor/agents`. Do **not** pitch Cursor Projects or pstack from this checkout — those are other topics.
+
+**Do not enable unattended Proceed-skip for the live enablement profile.** The parent chat must pause at `Proceed with implementation?` — that gate is the Topic A teaching moment (the babysitting tax). An always-on `.cursor/rules` skip breaks the live demo. A reference-only copy lives at [`docs/optional/nested-skills-unattended.mdc`](./docs/optional/nested-skills-unattended.mdc); do not copy it into `.cursor/rules/`.
 
 App runbook (unchanged): [README.md](./README.md). Backend extras: [BACKEND_SETUP.md](./BACKEND_SETUP.md).
 
@@ -75,7 +77,8 @@ Project rules the pipeline already honors:
 
 - `.cursor/rules/backend-rest-api.mdc` — `/api/v1/...`, `{ success, data }`, status codes.
 - `.cursor/rules/frontend-format-currency.mdc` — money via `formatCurrency`.
-- `.cursor/rules/nested-skills-unattended.mdc` — **this fork:** do not pause on reversible steps (plan write, implementer, parallel reviewers, tests).
+
+Do **not** add a rule that skips `Proceed with implementation?` for the live profile.
 
 ---
 
@@ -133,10 +136,11 @@ Acceptance Criteria:
 4. Keep existing watchlist CRUD, news, highlights, and price-alert UI working.
 
 Comments:
-- Topic 1 demo ticket. Apply fullstack-ticket-workflow unattended (see
-  .cursor/rules/nested-skills-unattended.mdc). Single feature-implementer
-  vertical slice, then parallel code-reviewer + test-engineer +
-  api-security-auditor. Do not fork-plan. Do not use best-of-N.
+- Topic 1 demo ticket. Apply fullstack-ticket-workflow and pause at
+  “Proceed with implementation?” until Joe confirms. Then one
+  feature-implementer vertical slice, then parallel code-reviewer +
+  test-engineer + api-security-auditor. Do not fork-plan. Do not use
+  best-of-N. Do not skip the Proceed? gate.
 ```
 
 Same ticket as a file you can @-mention: [`demo/tickets/TRIMBLE-1.md`](./demo/tickets/TRIMBLE-1.md).
@@ -150,10 +154,10 @@ Paste this **above** the ticket (or as the only message if you @-attached the ti
 ```md
 Apply the fullstack-ticket-workflow skill to the TRIMBLE-1 ticket below.
 
-This is the Trimble Topic 1 nested-skills demo. Execute unattended:
+This is the Trimble Topic 1 nested-skills demo:
 - Write the plan to `.cursor/plans/trimble-1.plan.md`.
-- Do not ask “Proceed with implementation?”
-- After the plan exists, launch one `feature-implementer` subagent.
+- Pause and ask “Proceed with implementation?” Do not skip that gate.
+- After Joe says proceed, launch one `feature-implementer` subagent.
 - When it returns, launch `code-reviewer`, `test-engineer`, and
   `api-security-auditor` in a single parallel tool call.
 - Apply `validate-implementation` before you sign off.
@@ -168,7 +172,7 @@ Then paste the TRIMBLE-1 block from section 2.
 Shorter variant if the ticket file is attached:
 
 ```md
-Apply fullstack-ticket-workflow to @demo/tickets/TRIMBLE-1.md and execute unattended per .cursor/rules/nested-skills-unattended.mdc.
+Apply fullstack-ticket-workflow to @demo/tickets/TRIMBLE-1.md. Pause at “Proceed with implementation?” and wait for approval.
 ```
 
 ---
@@ -182,8 +186,8 @@ Assumes Cursor Agent (or a Cloud Agent on this repo) and the app startable per R
 | 0:00 | Open this repo. In the file tree expand `.cursor/skills` and `.cursor/agents`. | Folders named `fullstack-ticket-workflow`, `do-ticket`, `feature-implementer`, `code-reviewer`, `test-engineer`, `api-security-auditor`. Say: “skills are markdown the parent agent applies; agents are nested workers.” |
 | 0:45 | Optional: `/start-demo` **or** follow README (`npm run server:dev` + `npm run dev`). | Backend `http://localhost:3000/health`, frontend `http://localhost:5173`. Dashboard already shows **Watchlist Highlights** and **Watchlist News**. There is **no** “Watchlist Movers” heading yet. |
 | 1:15 | New Agent chat. Paste the orchestrator prompt + TRIMBLE-1 ticket (section 3). Send. | Agent applies **`fullstack-ticket-workflow`**. You should see it resolve the pasted ticket via **`do-ticket`**, then emit a checklist via **`create-implementation-checklist`**. |
-| 2:00 | Do not click “approve” / do not type “proceed”. | Plan file appears: `.cursor/plans/trimble-1.plan.md` with an **API Contract** for `GET /api/v1/watchlists/:id/movers`. The unattended rule skips the old “Proceed with implementation?” pause. |
-| 2:30 | When the implementer starts, click its subagent card. | One nested **`feature-implementer`**. Inside it, look for `scaffold-api-endpoint` / `scaffold-ui-component` mentions. Files you expect: `watchlistRoutes.js`, `watchlistController.js`, `watchlistService.js`, `watchlistValidators.js`, `frontend/utils/api.js`, `WatchlistMovers.jsx`, `Dashboard.jsx`, `tests/watchlist-movers.test.js` (or similar). |
+| 2:00 | **Stop and narrate.** Do not type proceed yet. | Plan file appears: `.cursor/plans/trimble-1.plan.md` with an **API Contract** for `GET /api/v1/watchlists/:id/movers`. Parent chat asks **`Proceed with implementation?`**. That pause is the babysitting tax — the Topic A beat. |
+| 2:30 | Type `Yes, proceed` (or click the equivalent). When the implementer starts, click its subagent card. | One nested **`feature-implementer`**. Inside it, look for `scaffold-api-endpoint` / `scaffold-ui-component` mentions. Files you expect: `watchlistRoutes.js`, `watchlistController.js`, `watchlistService.js`, `watchlistValidators.js`, `frontend/utils/api.js`, `WatchlistMovers.jsx`, `Dashboard.jsx`, `tests/watchlist-movers.test.js` (or similar). |
 | 5:30 | After implementer reports back, wait for the review wave. | **Three** sibling subagent cards in one turn: **`code-reviewer`**, **`test-engineer`**, **`api-security-auditor`**. That is the nesting punchline. |
 | 7:30 | Refresh `http://localhost:5173`. Add AAPL (and optionally TSLA) via search → stock page → Add to Watchlist if the list is empty. | Dashboard cues: heading **Watchlist Movers**; gainer/loser rows with `$X,XXX.XX` (formatCurrency); empty copy **Add stocks to your watchlist to see today's movers** if the list is empty; **Unable to load watchlist movers** if the API errors. Highlights + News still present. |
 | 9:00 | Optional curl (auth token from `POST /api/v1/auth/default`): `GET /api/v1/watchlists/:id/movers`. | `{ "success": true, "data": { "movers": { "gainers", "losers", "unchanged" }, "asOf": "..." } }`. |
@@ -191,7 +195,8 @@ Assumes Cursor Agent (or a Cloud Agent on this repo) and the app startable per R
 
 ### If something stalls
 
-- Agent asks “Proceed with implementation?” → reply `Yes, execute unattended` (the rule should have skipped this; treat as a miss).
+- Agent **skips** “Proceed with implementation?” → stop and call it out; the live profile must keep that gate. Confirm `.cursor/rules/` has no unattended Proceed-skip file.
+- Agent asks “Proceed with implementation?” → that is expected. Reply `Yes, proceed` when you are ready to show the nested implementer.
 - No subagent cards → confirm you are in **Agent** mode, not Ask, and that `.cursor/agents/*.md` is present.
 - Dashboard unchanged → confirm both servers are up and you hard-refreshed; the new heading is **Watchlist Movers**.
 - App broken → `git checkout -- frontend backend` on the demo-run branch and restart; this harness PR does not change product code.

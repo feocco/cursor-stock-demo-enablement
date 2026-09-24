@@ -20,7 +20,7 @@ Store the count of command files to verify later. These files must survive the r
 
 **Agents folder:** Do not delete or modify `.cursor/agents/` (e.g. `feature-implementer`, `test-engineer`, `code-reviewer`, `api-security-auditor`).
 
-**Rules folder:** Do not delete `.cursor/rules/` (including `nested-skills-unattended.mdc`, `backend-rest-api.mdc`, `frontend-format-currency.mdc`).
+**Rules folder:** Do not delete `.cursor/rules/` (`backend-rest-api.mdc`, `frontend-format-currency.mdc`). Do not add an unattended Proceed-skip rule.
 
 **Demo harness:** Do not delete `DEMO_TRIMBLE.md` or `demo/tickets/`.
 

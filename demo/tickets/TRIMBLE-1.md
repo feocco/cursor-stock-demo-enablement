@@ -47,7 +47,8 @@ Acceptance Criteria:
 4. Keep existing watchlist CRUD, news, highlights, and price-alert UI working.
 
 Comments:
-- Topic 1 demo ticket. Apply fullstack-ticket-workflow unattended (see
-  .cursor/rules/nested-skills-unattended.mdc). Single feature-implementer
-  vertical slice, then parallel code-reviewer + test-engineer +
-  api-security-auditor. Do not fork-plan. Do not use best-of-N.
+- Topic 1 demo ticket. Apply fullstack-ticket-workflow and pause at
+  “Proceed with implementation?” until confirmed. Then one
+  feature-implementer vertical slice, then parallel code-reviewer +
+  test-engineer + api-security-auditor. Do not fork-plan. Do not use
+  best-of-N. Do not skip the Proceed? gate.
