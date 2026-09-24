@@ -22,7 +22,7 @@ Store the count of command files to verify later. These files must survive the r
 
 **Rules folder:** Do not delete `.cursor/rules/` (`backend-rest-api.mdc`, `frontend-format-currency.mdc`). Do not add an unattended Proceed-skip rule.
 
-**Demo harness:** Do not delete `DEMO_TRIMBLE.md` or `demo/tickets/`.
+**Demo harness:** Do not delete `DEMO_ENABLEMENT.md` or `demo/tickets/`.
 
 ## Task
 

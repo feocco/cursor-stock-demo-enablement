@@ -1,5 +1,5 @@
-Title: TRIMBLE-1 — Watchlist movers endpoint + thin dashboard panel
-Status / Priority: Ready / P1 (Trimble Topic 1 nested-skills demo)
+Title: ENABLEMENT-1 — Watchlist movers endpoint + thin dashboard panel
+Status / Priority: Ready / P1 (Enablement Topic 1 nested-skills demo)
 Description:
 Traders can see today's biggest gainer and loser on their watchlist without
 opening every quote. Add one authenticated read endpoint and a thin dashboard

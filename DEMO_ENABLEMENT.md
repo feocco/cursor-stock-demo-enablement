@@ -1,6 +1,6 @@
-# Trimble enablement — Topic 1: nested skills
+# Enablement enablement — Topic 1: nested skills
 
-This fork is the **skills-only** harness for Joe Feocco’s Trimble enablement session on nested skills. Nate Lauf’s stock-trading demo stays intact; this file is the live-demo script, not a product rewrite.
+This fork is the **skills-only** harness for Joe Feocco’s Enablement enablement session on nested skills. Nate Lauf’s stock-trading demo stays intact; this file is the live-demo script, not a product rewrite.
 
 **Scope of this repo:** `.cursor/skills` and `.cursor/agents`. Do **not** pitch Cursor Projects or pstack from this checkout — those are other topics.
 
@@ -28,7 +28,7 @@ Custom subagents live at `.cursor/agents/<agent-name>.md`. The parent agent laun
 | `do-ticket` | `.cursor/skills/do-ticket/SKILL.md` | Nested by the orchestrator (step 1). Also `/do-ticket`. Pasted ticket first; Jira/Linear MCP optional. |
 | `create-implementation-checklist` | `.cursor/skills/create-implementation-checklist/SKILL.md` | Nested by the orchestrator (step 2). Also `/create-implementation-checklist`. |
 | `validate-implementation` | `.cursor/skills/validate-implementation/SKILL.md` | Nested by the orchestrator after the review pass. Also `/validate-implementation`. |
-| `fork-plan` | `.cursor/skills/fork-plan/SKILL.md` | **Optional / off-script.** Split a plan into backend + frontend. Do **not** use for TRIMBLE-1. |
+| `fork-plan` | `.cursor/skills/fork-plan/SKILL.md` | **Optional / off-script.** Split a plan into backend + frontend. Do **not** use for ENABLEMENT-1. |
 
 ### Implementer (one vertical-slice subagent)
 
@@ -62,7 +62,7 @@ Custom subagents live at `.cursor/agents/<agent-name>.md`. The parent agent laun
 fullstack-ticket-workflow          ← parent Agent (orchestrator)
  ├─ do-ticket
  ├─ create-implementation-checklist
- ├─ write .cursor/plans/trimble-1.plan.md
+ ├─ write .cursor/plans/enablement-1.plan.md
  ├─ feature-implementer            ← one nested implementer
  │   ├─ scaffold-api-endpoint
  │   └─ scaffold-ui-component
@@ -82,13 +82,13 @@ Do **not** add a rule that skips `Proceed with implementation?` for the live pro
 
 ---
 
-## 2. Ready-to-paste demo ticket (TRIMBLE-1)
+## 2. Ready-to-paste demo ticket (ENABLEMENT-1)
 
-Copy everything in the block below into Agent chat (or attach `@demo/tickets/TRIMBLE-1.md`).
+Copy everything in the block below into Agent chat (or attach `@demo/tickets/ENABLEMENT-1.md`).
 
 ```md
-Title: TRIMBLE-1 — Watchlist movers endpoint + thin dashboard panel
-Status / Priority: Ready / P1 (Trimble Topic 1 nested-skills demo)
+Title: ENABLEMENT-1 — Watchlist movers endpoint + thin dashboard panel
+Status / Priority: Ready / P1 (Enablement Topic 1 nested-skills demo)
 Description:
 Traders can see today's biggest gainer and loser on their watchlist without
 opening every quote. Add one authenticated read endpoint and a thin dashboard
@@ -143,7 +143,7 @@ Comments:
   best-of-N. Do not skip the Proceed? gate.
 ```
 
-Same ticket as a file you can @-mention: [`demo/tickets/TRIMBLE-1.md`](./demo/tickets/TRIMBLE-1.md).
+Same ticket as a file you can @-mention: [`demo/tickets/ENABLEMENT-1.md`](./demo/tickets/ENABLEMENT-1.md).
 
 ---
 
@@ -152,10 +152,10 @@ Same ticket as a file you can @-mention: [`demo/tickets/TRIMBLE-1.md`](./demo/ti
 Paste this **above** the ticket (or as the only message if you @-attached the ticket file):
 
 ```md
-Apply the fullstack-ticket-workflow skill to the TRIMBLE-1 ticket below.
+Apply the fullstack-ticket-workflow skill to the ENABLEMENT-1 ticket below.
 
-This is the Trimble Topic 1 nested-skills demo:
-- Write the plan to `.cursor/plans/trimble-1.plan.md`.
+This is the Enablement Topic 1 nested-skills demo:
+- Write the plan to `.cursor/plans/enablement-1.plan.md`.
 - Pause and ask “Proceed with implementation?” Do not skip that gate.
 - After Joe says proceed, launch one `feature-implementer` subagent.
 - When it returns, launch `code-reviewer`, `test-engineer`, and
@@ -167,12 +167,12 @@ This is the Trimble Topic 1 nested-skills demo:
 Ticket:
 ```
 
-Then paste the TRIMBLE-1 block from section 2.
+Then paste the ENABLEMENT-1 block from section 2.
 
 Shorter variant if the ticket file is attached:
 
 ```md
-Apply fullstack-ticket-workflow to @demo/tickets/TRIMBLE-1.md. Pause at “Proceed with implementation?” and wait for approval.
+Apply fullstack-ticket-workflow to @demo/tickets/ENABLEMENT-1.md. Pause at “Proceed with implementation?” and wait for approval.
 ```
 
 ---
@@ -185,8 +185,8 @@ Assumes Cursor Agent (or a Cloud Agent on this repo) and the app startable per R
 |---|---|---|
 | 0:00 | Open this repo. In the file tree expand `.cursor/skills` and `.cursor/agents`. | Folders named `fullstack-ticket-workflow`, `do-ticket`, `feature-implementer`, `code-reviewer`, `test-engineer`, `api-security-auditor`. Say: “skills are markdown the parent agent applies; agents are nested workers.” |
 | 0:45 | Optional: `/start-demo` **or** follow README (`npm run server:dev` + `npm run dev`). | Backend `http://localhost:3000/health`, frontend `http://localhost:5173`. Dashboard already shows **Watchlist Highlights** and **Watchlist News**. There is **no** “Watchlist Movers” heading yet. |
-| 1:15 | New Agent chat. Paste the orchestrator prompt + TRIMBLE-1 ticket (section 3). Send. | Agent applies **`fullstack-ticket-workflow`**. You should see it resolve the pasted ticket via **`do-ticket`**, then emit a checklist via **`create-implementation-checklist`**. |
-| 2:00 | **Stop and narrate.** Do not type proceed yet. | Plan file appears: `.cursor/plans/trimble-1.plan.md` with an **API Contract** for `GET /api/v1/watchlists/:id/movers`. Parent chat asks **`Proceed with implementation?`**. That pause is the babysitting tax — the Topic A beat. |
+| 1:15 | New Agent chat. Paste the orchestrator prompt + ENABLEMENT-1 ticket (section 3). Send. | Agent applies **`fullstack-ticket-workflow`**. You should see it resolve the pasted ticket via **`do-ticket`**, then emit a checklist via **`create-implementation-checklist`**. |
+| 2:00 | **Stop and narrate.** Do not type proceed yet. | Plan file appears: `.cursor/plans/enablement-1.plan.md` with an **API Contract** for `GET /api/v1/watchlists/:id/movers`. Parent chat asks **`Proceed with implementation?`**. That pause is the babysitting tax — the Topic A beat. |
 | 2:30 | Type `Yes, proceed` (or click the equivalent). When the implementer starts, click its subagent card. | One nested **`feature-implementer`**. Inside it, look for `scaffold-api-endpoint` / `scaffold-ui-component` mentions. Files you expect: `watchlistRoutes.js`, `watchlistController.js`, `watchlistService.js`, `watchlistValidators.js`, `frontend/utils/api.js`, `WatchlistMovers.jsx`, `Dashboard.jsx`, `tests/watchlist-movers.test.js` (or similar). |
 | 5:30 | After implementer reports back, wait for the review wave. | **Three** sibling subagent cards in one turn: **`code-reviewer`**, **`test-engineer`**, **`api-security-auditor`**. That is the nesting punchline. |
 | 7:30 | Refresh `http://localhost:5173`. Add AAPL (and optionally TSLA) via search → stock page → Add to Watchlist if the list is empty. | Dashboard cues: heading **Watchlist Movers**; gainer/loser rows with `$X,XXX.XX` (formatCurrency); empty copy **Add stocks to your watchlist to see today's movers** if the list is empty; **Unable to load watchlist movers** if the API errors. Highlights + News still present. |
@@ -207,4 +207,4 @@ Assumes Cursor Agent (or a Cloud Agent on this repo) and the app startable per R
 
 **Is:** a brownfield repo where a parent skill composes other skills and launches role-based subagents. The ticket is sized so the file list and UI heading are obvious on a projector.
 
-**Is not:** a Cursor Projects walkthrough, a pstack walkthrough, or a claim that Trimble must adopt this exact pipeline. Nate’s `/start-demo`, `/reset-demo`, and `/inject-debug-bug` commands still work for his original session.
+**Is not:** a Cursor Projects walkthrough, a pstack walkthrough, or a claim that Enablement must adopt this exact pipeline. Nate’s `/start-demo`, `/reset-demo`, and `/inject-debug-bug` commands still work for his original session.

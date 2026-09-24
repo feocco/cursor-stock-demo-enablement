@@ -1,5 +1,5 @@
 ---
-description: OPTIONAL — do not copy into .cursor/rules for live Trimble enablement. Skips the fullstack-ticket-workflow “Proceed with implementation?” pause.
+description: OPTIONAL — do not copy into .cursor/rules for live Enablement enablement. Skips the fullstack-ticket-workflow “Proceed with implementation?” pause.
 alwaysApply: false
 ---
 
@@ -9,7 +9,7 @@ alwaysApply: false
 
 Topic A’s teaching moment is the parent Agent pausing at `Proceed with implementation?`. This file is a reference only. It is **not** loaded from `.cursor/rules/` and must stay here unless someone explicitly opts in after the live session.
 
-If you ever want unattended cloud-agent runs, copy this file to `.cursor/rules/` yourself. Do not do that for Joe’s live Trimble Topic 1 demo.
+If you ever want unattended cloud-agent runs, copy this file to `.cursor/rules/` yourself. Do not do that for Joe’s live Enablement Topic 1 demo.
 
 ## What this would do (if enabled)
 

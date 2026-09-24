@@ -2,12 +2,12 @@
 
 A full-featured React-based stock trading simulator that allows users to practice trading stocks with virtual money. Features real-time price updates, interactive charts, portfolio management, and a personal watchlist.
 
-## Trimble enablement (Topic 1: nested skills)
+## Enablement enablement (Topic 1: nested skills)
 
-This fork is the **skills-only** harness for Joe Feocco’s Trimble enablement session on nested skills (orchestrator → implementer → parallel reviewers). The trading app below is unchanged from Nate Lauf’s demo.
+This fork is the **skills-only** harness for Joe Feocco’s Enablement enablement session on nested skills (orchestrator → implementer → parallel reviewers). The trading app below is unchanged from Nate Lauf’s demo.
 
-- **Live script, skill names, paste ticket, expected UI cues:** [DEMO_TRIMBLE.md](./DEMO_TRIMBLE.md)
-- **Paste-ready ticket file:** [demo/tickets/TRIMBLE-1.md](./demo/tickets/TRIMBLE-1.md)
+- **Live script, skill names, paste ticket, expected UI cues:** [DEMO_ENABLEMENT.md](./DEMO_ENABLEMENT.md)
+- **Paste-ready ticket file:** [demo/tickets/ENABLEMENT-1.md](./demo/tickets/ENABLEMENT-1.md)
 
 Do not treat this checkout as a Cursor Projects or pstack walkthrough. Topic 1 is the pipeline in `.cursor/skills` and `.cursor/agents`.
 
