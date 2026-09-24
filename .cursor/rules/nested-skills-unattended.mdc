@@ -1,0 +1,40 @@
+---
+description: Run the nested fullstack-ticket-workflow pipeline without pausing on reversible steps (Trimble Topic 1 / cloud agents)
+alwaysApply: true
+---
+
+# Nested skills — unattended execution
+
+This checkout is the Trimble Topic 1 (nested skills) harness. When the user pastes `TRIMBLE-1`, attaches `demo/tickets/TRIMBLE-1.md`, says “fullstack-ticket-workflow”, “nested skills”, or “execute unattended”, **run the pipeline without asking for confirmation on reversible work**.
+
+## Do not babysit these steps
+
+Treat as reversible and proceed immediately:
+
+- Applying `do-ticket` and `create-implementation-checklist`
+- Writing `.cursor/plans/<ticket>.plan.md` (for this demo: `.cursor/plans/trimble-1.plan.md`)
+- Launching one `feature-implementer` subagent after the plan exists
+- Launching `code-reviewer`, `test-engineer`, and `api-security-auditor` in a **single parallel** Task call
+- Applying `validate-implementation`
+- Running `npm test`, `npm run lint`, focused Jest files, and local `curl` to localhost
+- Editing product files on a feature branch to implement TRIMBLE-1
+- Creating a feature branch / committing on that branch when the user (or cloud-agent run) asked for a PR
+
+**Skip** the `fullstack-ticket-workflow` pause that asks `Proceed with implementation?` for TRIMBLE-1 and any cloud-agent run of that skill on this repo.
+
+## Still stop (irreversible)
+
+- Force-push, push to `main`/`master`, or delete `.cursor/skills`, `.cursor/agents`, or `.cursor/commands`
+- Dropping the database, deleting production-like data, or leaking secrets/tokens
+- Using `fork-plan`, best-of-N, or a layered backend/frontend split unless the user explicitly asks
+- Implementing a different ticket than the one they pasted
+
+## Pipeline to run (do not invent extras)
+
+1. `fullstack-ticket-workflow` (parent)
+2. `do-ticket` → `create-implementation-checklist` → plan file
+3. One `feature-implementer` (it applies `scaffold-api-endpoint` and `scaffold-ui-component`)
+4. Parallel: `code-reviewer`, `test-engineer`, `api-security-auditor`
+5. `validate-implementation`
+
+Default for TRIMBLE-1 is this single-ticket pipeline. Do not pitch or require Cursor Projects or pstack.

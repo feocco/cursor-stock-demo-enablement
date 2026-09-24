@@ -7,7 +7,7 @@ description: "Orchestrates a full-stack ticket workflow for the stock demo (past
 
 Use this skill to turn a ticket into an end-to-end implementation using role-based subagents. The default is a **single-ticket pipeline**: one agent implements the feature as a vertical slice, then specialist agents review, test, and security-audit the result in parallel. The ticket can come from pasted content or, when available, the Jira (Atlassian) or Linear MCP.
 
-This is a planning workflow first: do not modify product code or launch implementation subagents until the user approves the plan.
+This is a planning workflow first: do not modify product code or launch implementation subagents until the user approves the plan — unless `.cursor/rules/nested-skills-unattended.mdc` applies (TRIMBLE-1 / cloud agent / “execute unattended”), in which case write the plan and continue the pipeline without asking.
 
 ## Workflow
 
@@ -27,12 +27,12 @@ This is a planning workflow first: do not modify product code or launch implemen
    - Include YAML frontmatter: `name`, `overview`, `todos`, and `isProject`.
    - Define the shared API contract explicitly — method, path, query/body params, response JSON, error states — so the single implementer builds the backend and frontend against one seam. If the contract is ambiguous, draft a proposed contract and call it out as an assumption.
 
-4. **Pause before execution**
-   - Do not launch subagents automatically.
+4. **Pause before execution** (interactive only)
    - Present the ticket summary, plan path, task count, the API contract, the proposed pipeline, and any risks.
-   - Ask: `Proceed with implementation?`
+   - **Unattended / Trimble demo:** if `.cursor/rules/nested-skills-unattended.mdc` applies (pasted `TRIMBLE-1`, `@demo/tickets/TRIMBLE-1.md`, cloud agent, or the user said execute unattended), **do not pause**. Continue at step 5 immediately.
+   - Otherwise do not launch subagents yet. Ask: `Proceed with implementation?`
 
-5. **Execute the pipeline** (only after approval)
+5. **Execute the pipeline** (after approval, or immediately when unattended)
    - **Implement**: launch one `feature-implementer` subagent to build the whole vertical slice (backend + frontend) from the plan.
    - **Review pass**: once implementation reports back, launch these in a single parallel tool call, since they are read-only/non-conflicting:
      - `code-reviewer` — quality, API design, contract match, project rules.
@@ -98,4 +98,6 @@ Review the implementation of `.cursor/plans/<ticket>.plan.md`.
 
 ## Approval Needed
 Proceed with implementation?
+
+(Omit this section and continue when the unattended / TRIMBLE-1 rule applies.)
 ```
