@@ -4,6 +4,8 @@ import {
   calculateTotalPnL,
   calculateHoldingPnL,
   calculatePnLPercentage,
+  formatCurrency,
+  formatPercentage,
 } from '../frontend/utils/calculations.js';
 
 describe('calculations', () => {
@@ -165,6 +167,85 @@ describe('calculations', () => {
       expect(totalPnL).toBe(750);
       expect(costBasis).toBe(11250);
       expect(pnlPercent).toBeCloseTo(6.67, 2);
+    });
+  });
+
+  describe('Badge sign consistency', () => {
+    it('formats positive P&L with positive sign in both currency and percentage', () => {
+      const totalPnL = 1098.38;
+      const pnlPercent = 3.78;
+
+      const formattedCurrency = formatCurrency(totalPnL);
+      const formattedPercent = formatPercentage(pnlPercent);
+
+      expect(formattedCurrency).toBe('$1,098.38');
+      expect(formattedPercent).toBe('+3.78%');
+      expect(formattedCurrency.includes('-')).toBe(false);
+      expect(formattedPercent.startsWith('+')).toBe(true);
+    });
+
+    it('formats negative P&L with negative sign in both currency and percentage', () => {
+      const totalPnL = -1098.38;
+      const pnlPercent = -3.78;
+
+      const formattedCurrency = formatCurrency(totalPnL);
+      const formattedPercent = formatPercentage(pnlPercent);
+
+      expect(formattedCurrency).toBe('-$1,098.38');
+      expect(formattedPercent).toBe('-3.78%');
+      expect(formattedCurrency.startsWith('-')).toBe(true);
+      expect(formattedPercent.startsWith('-')).toBe(true);
+    });
+
+    it('formats zero P&L with no sign in both currency and percentage', () => {
+      const totalPnL = 0;
+      const pnlPercent = 0;
+
+      const formattedCurrency = formatCurrency(totalPnL);
+      const formattedPercent = formatPercentage(pnlPercent);
+
+      expect(formattedCurrency).toBe('$0.00');
+      expect(formattedPercent).toBe('+0.00%');
+      expect(formattedCurrency.includes('-')).toBe(false);
+    });
+
+    it('calculates portfolio P&L percentage relative to starting capital', () => {
+      const holdings = [
+        { symbol: 'AAPL', quantity: 100, avgPrice: 150 },
+        { symbol: 'GOOGL', quantity: 50, avgPrice: 200 },
+      ];
+      const currentPrices = {
+        AAPL: 140,
+        GOOGL: 190,
+      };
+      const cash = 10000;
+      const startingCapital = 100000;
+
+      const portfolioValue = calculatePortfolioValue(holdings, currentPrices);
+      const totalValue = cash + portfolioValue;
+      const totalPnL = totalValue - startingCapital;
+      const pnlPercent = (totalPnL / startingCapital) * 100;
+
+      expect(totalValue).toBe(33500);
+      expect(totalPnL).toBe(-66500);
+      expect(pnlPercent).toBeCloseTo(-66.5, 1);
+      expect(totalPnL < 0).toBe(pnlPercent < 0);
+    });
+
+    it('calculates quote change where dollar and percent have consistent sign', () => {
+      const quote = {
+        currentPrice: 150,
+        change: -5.25,
+        changePercent: -3.38,
+      };
+
+      const isPositive = quote.change > 0;
+      const isNegative = quote.change < 0;
+
+      expect(isPositive).toBe(quote.changePercent > 0);
+      expect(isNegative).toBe(quote.changePercent < 0);
+      expect(formatCurrency(quote.change)).toBe('-$5.25');
+      expect(formatPercentage(quote.changePercent)).toBe('-3.38%');
     });
   });
 });

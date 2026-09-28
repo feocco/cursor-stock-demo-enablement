@@ -28,12 +28,14 @@ export const calculatePnLPercentage = (holding, currentPrice) => {
 }
 
 export const formatCurrency = (value) => {
-  return new Intl.NumberFormat('en-US', {
+  const absValue = Math.abs(value)
+  const formatted = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  }).format(value)
+  }).format(absValue)
+  return value >= 0 ? formatted : `-${formatted}`
 }
 
 export const formatPercentage = (value) => {

@@ -31,10 +31,22 @@ const HoldingsTable = () => {
   const totalPnL = totals.marketValue - totals.costBasis
   const totalsArePositive = totalPnL >= 0
 
+  const getSymbolColor = (symbol) => {
+    const colors = [
+      'bg-blue-500/10 text-blue-500',
+      'bg-purple-500/10 text-purple-500',
+      'bg-green-500/10 text-green-500',
+      'bg-orange-500/10 text-orange-500',
+      'bg-pink-500/10 text-pink-500',
+    ]
+    const index = symbol.charCodeAt(0) % colors.length
+    return colors[index]
+  }
+
   if (holdings.length === 0) {
     return (
-      <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-8">
-        <div className="text-center text-gray-400 dark:text-gray-400 light:text-gray-600">
+      <div className="bg-surface border border-border rounded-xl p-8">
+        <div className="text-center text-text-muted">
           <p className="text-xl mb-2">No holdings yet</p>
           <p className="text-sm">Search for stocks to start trading</p>
         </div>
@@ -45,45 +57,41 @@ const HoldingsTable = () => {
   const isInitialLoading = loading && Object.keys(quotes).length === 0
 
   return (
-    <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg overflow-hidden">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-900 dark:bg-gray-900 light:bg-gray-50">
+          <thead className="bg-surface-raised">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-text-muted uppercase tracking-wider">
                 Symbol
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                 Quantity
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                 Avg Price
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                 Current Price
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                 Market Value
               </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-medium text-text-muted uppercase tracking-wider">
                 P&L
-              </th>
-              <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-400 light:text-gray-600 uppercase tracking-wider">
-                P&L %
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700 dark:divide-gray-700 light:divide-gray-200">
+          <tbody className="divide-y divide-border">
             {isInitialLoading ? (
               [...Array(3)].map((_, i) => (
                 <tr key={i}>
-                  <td className="px-6 py-4"><Skeleton className="w-16" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-20 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-24 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-24 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-28 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-24 ml-auto" /></td>
-                  <td className="px-6 py-4"><Skeleton className="w-20 ml-auto" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-16" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-20 ml-auto" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-24 ml-auto" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-24 ml-auto" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-28 ml-auto" /></td>
+                  <td className="px-6 py-3.5"><Skeleton className="w-24 ml-auto" /></td>
                 </tr>
               ))
             ) : (
@@ -99,52 +107,54 @@ const HoldingsTable = () => {
                 <tr 
                   key={holding.symbol}
                   onClick={() => navigate(`/stock/${holding.symbol}`)}
-                  className="hover:bg-gray-700 dark:hover:bg-gray-700 light:hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="hover:bg-surface-raised cursor-pointer transition-colors duration-150 motion-reduce:transition-none"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-semibold text-blue-400 dark:text-blue-400 light:text-blue-600">
-                      {holding.symbol}
+                  <td className="px-6 py-3.5 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${getSymbolColor(holding.symbol)}`}>
+                        {holding.symbol.substring(0, 2)}
+                      </div>
+                      <div className="text-sm font-semibold text-accent">
+                        {holding.symbol}
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-white dark:text-white light:text-gray-900">
+                  <td className="px-6 py-3.5 whitespace-nowrap text-right text-sm text-text tabular-nums">
                     {formatNumber(holding.quantity)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-white dark:text-white light:text-gray-900">
+                  <td className="px-6 py-3.5 whitespace-nowrap text-right text-sm text-text tabular-nums">
                     {formatCurrency(holding.avgPrice)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-white dark:text-white light:text-gray-900">
+                  <td className="px-6 py-3.5 whitespace-nowrap text-right text-sm text-text tabular-nums">
                     {loading ? (
-                      <div className="h-4 w-16 bg-gray-600 dark:bg-gray-600 light:bg-gray-200 rounded animate-pulse ml-auto"></div>
+                      <div className="h-4 w-16 bg-surface-raised rounded animate-pulse ml-auto"></div>
                     ) : (
                       formatCurrency(currentPrice)
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-white dark:text-white light:text-gray-900">
+                  <td className="px-6 py-3.5 whitespace-nowrap text-right text-sm font-semibold text-text tabular-nums">
                     {formatCurrency(marketValue)}
                   </td>
-                  <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-semibold ${isPositive ? 'text-gain' : 'text-loss'}`}>
-                    {formatCurrency(pnl)}
-                  </td>
-                  <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-semibold ${isPositive ? 'text-gain' : 'text-loss'}`}>
-                    {formatPercentage(pnlPercent)}
+                  <td className={`px-6 py-3.5 whitespace-nowrap text-right text-sm font-semibold tabular-nums ${isPositive ? 'text-gain' : 'text-loss'}`}>
+                    <div>{formatCurrency(pnl)}</div>
+                    <div className="text-xs">{formatPercentage(pnlPercent)}</div>
                   </td>
                 </tr>
                 )
               })
             )}
           </tbody>
-          <tfoot className="bg-gray-900 dark:bg-gray-900 light:bg-gray-50">
+          <tfoot className="bg-surface-raised border-t-2 border-border">
             <tr>
-              <td className="px-6 py-4 text-sm font-semibold text-gray-300 dark:text-gray-300 light:text-gray-700" colSpan={4}>
+              <td className="px-6 py-3.5 text-sm font-semibold text-text" colSpan={4}>
                 Total
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-white dark:text-white light:text-gray-900">
+              <td className="px-6 py-3.5 whitespace-nowrap text-right text-sm font-semibold text-text tabular-nums">
                 {formatCurrency(totals.marketValue)}
               </td>
-              <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-semibold ${totalsArePositive ? 'text-gain' : 'text-loss'}`}>
+              <td className={`px-6 py-3.5 whitespace-nowrap text-right text-sm font-semibold tabular-nums ${totalsArePositive ? 'text-gain' : 'text-loss'}`}>
                 {formatCurrency(totalPnL)}
               </td>
-              <td className="px-6 py-4"></td>
             </tr>
           </tfoot>
         </table>

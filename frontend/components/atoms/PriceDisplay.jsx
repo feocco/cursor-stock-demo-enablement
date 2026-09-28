@@ -24,7 +24,7 @@ const PriceDisplay = ({ price, change, changePercent, size = 'md', showChange = 
       {showChange && (
         <div className={`${colorClass} ${changeSize[size]} font-semibold flex items-center gap-1`}>
           <span>{isPositive ? '▲' : '▼'}</span>
-          <span>{formatCurrency(Math.abs(change))}</span>
+          <span>{formatCurrency(change)}</span>
           <span>({formatPercentage(changePercent)})</span>
         </div>
       )}

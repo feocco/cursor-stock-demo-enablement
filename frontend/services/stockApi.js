@@ -52,16 +52,21 @@ export const stockApi = {
       return quote
     } catch (error) {
       console.error('Error fetching quote:', error)
-      // Return mock data for demo
+      // Return mock data for demo with consistent change/changePercent signs
+      const currentPrice = 150 + Math.random() * 50
+      const change = (Math.random() - 0.5) * 10
+      const previousClose = currentPrice - change
+      const changePercent = previousClose !== 0 ? (change / previousClose) * 100 : 0
+      
       return {
         symbol,
-        currentPrice: 150 + Math.random() * 50,
-        change: (Math.random() - 0.5) * 10,
-        changePercent: (Math.random() - 0.5) * 5,
-        high: 200,
-        low: 100,
-        open: 150,
-        previousClose: 155,
+        currentPrice,
+        change,
+        changePercent,
+        high: Math.max(currentPrice, previousClose) + Math.random() * 5,
+        low: Math.min(currentPrice, previousClose) - Math.random() * 5,
+        open: previousClose + (Math.random() - 0.5) * 2,
+        previousClose,
         timestamp: Date.now()
       }
     }

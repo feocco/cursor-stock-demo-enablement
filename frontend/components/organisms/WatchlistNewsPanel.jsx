@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../utils/api'
 import Button from '../atoms/Button'
 
-const DEFAULT_LIMIT = 20
+const DEFAULT_LIMIT = 5
+const EXPANDED_LIMIT = 20
 
 const SENTIMENT_OPTIONS = [
   { label: 'All sentiments', value: '' },
@@ -18,12 +19,12 @@ const SORT_OPTIONS = [
 
 const getSentimentChipClasses = (sentiment) => {
   if (sentiment === 'positive') {
-    return 'bg-green-500/20 text-green-300 border border-green-500/30'
+    return 'bg-gain/20 text-gain border border-gain/30'
   }
   if (sentiment === 'negative') {
-    return 'bg-red-500/20 text-red-300 border border-red-500/30'
+    return 'bg-loss/20 text-loss border border-loss/30'
   }
-  return 'bg-gray-600/30 text-gray-300 border border-gray-500/40'
+  return 'bg-surface-raised text-text-muted border border-border'
 }
 
 const getSentimentLabel = (sentiment) => {
@@ -56,6 +57,7 @@ const WatchlistNewsPanel = ({ watchlistId, symbols = [], isWatchlistReady = fals
   const [symbolFilter, setSymbolFilter] = useState('')
   const [sentimentFilter, setSentimentFilter] = useState('')
   const [sortOrder, setSortOrder] = useState('publishedAt:desc')
+  const [showAll, setShowAll] = useState(false)
 
   const symbolOptions = useMemo(
     () => [{ label: 'All symbols', value: '' }, ...symbols.map((symbol) => ({ label: symbol, value: symbol }))],
@@ -71,9 +73,11 @@ const WatchlistNewsPanel = ({ watchlistId, symbols = [], isWatchlistReady = fals
       setLoading(true)
       setError(null)
       setLoadMoreError(null)
+      setShowAll(false)
       try {
+        const limit = showAll ? EXPANDED_LIMIT : DEFAULT_LIMIT
         const payload = await api.getWatchlistNews(watchlistId, {
-          limit: DEFAULT_LIMIT,
+          limit,
           symbol: symbolFilter || undefined,
           sentiment: sentimentFilter || undefined,
           sort: sortOrder,
@@ -92,7 +96,7 @@ const WatchlistNewsPanel = ({ watchlistId, symbols = [], isWatchlistReady = fals
     }
 
     fetchInitialFeed()
-  }, [watchlistId, symbolFilter, sentimentFilter, sortOrder, isWatchlistReady])
+  }, [watchlistId, symbolFilter, sentimentFilter, sortOrder, isWatchlistReady, showAll])
 
   const handleLoadMore = async () => {
     if (!watchlistId || !hasMore || nextCursor === null || loadingMore) {
@@ -121,95 +125,85 @@ const WatchlistNewsPanel = ({ watchlistId, symbols = [], isWatchlistReady = fals
 
   if (!isWatchlistReady) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-white mb-4">Watchlist News</h2>
-        <div className="text-sm text-gray-400">Loading watchlist news...</div>
+      <div className="bg-surface border border-border rounded-xl p-4">
+        <div className="text-sm text-text-muted">Loading news...</div>
       </div>
     )
   }
 
   if (!symbols.length) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-white mb-4">Watchlist News</h2>
-        <div className="text-sm text-gray-400">Add symbols to your watchlist to see aggregated news.</div>
+      <div className="bg-surface border border-border rounded-xl p-4">
+        <div className="text-sm text-text-muted">Add symbols to your watchlist to see news.</div>
       </div>
     )
   }
 
   if (!watchlistId) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-white mb-4">Watchlist News</h2>
-        <div className="text-sm text-gray-400">Unable to sync watchlist news right now.</div>
+      <div className="bg-surface border border-border rounded-xl p-4">
+        <div className="text-sm text-text-muted">Unable to sync news right now.</div>
       </div>
     )
   }
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <h2 className="text-2xl font-semibold text-white mb-4">Watchlist News</h2>
+    <div className="bg-surface border border-border rounded-xl p-4">
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-        <label className="text-sm text-gray-300">
-          <span className="block mb-1">Symbol</span>
-          <select
-            value={symbolFilter}
-            onChange={(event) => setSymbolFilter(event.target.value)}
-            className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white"
-          >
-            {symbolOptions.map((option) => (
-              <option key={option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <select
+          value={symbolFilter}
+          onChange={(event) => setSymbolFilter(event.target.value)}
+          className="text-xs bg-surface-raised border border-border rounded-lg px-2 py-1.5 text-text"
+          aria-label="Filter by symbol"
+        >
+          {symbolOptions.map((option) => (
+            <option key={option.label} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
-        <label className="text-sm text-gray-300">
-          <span className="block mb-1">Sentiment</span>
-          <select
-            value={sentimentFilter}
-            onChange={(event) => setSentimentFilter(event.target.value)}
-            className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white"
-          >
-            {SENTIMENT_OPTIONS.map((option) => (
-              <option key={option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <select
+          value={sentimentFilter}
+          onChange={(event) => setSentimentFilter(event.target.value)}
+          className="text-xs bg-surface-raised border border-border rounded-lg px-2 py-1.5 text-text"
+          aria-label="Filter by sentiment"
+        >
+          {SENTIMENT_OPTIONS.map((option) => (
+            <option key={option.label} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
-        <label className="text-sm text-gray-300">
-          <span className="block mb-1">Sort</span>
-          <select
-            value={sortOrder}
-            onChange={(event) => setSortOrder(event.target.value)}
-            className="w-full bg-gray-900 border border-gray-600 rounded px-3 py-2 text-sm text-white"
-          >
-            {SORT_OPTIONS.map((option) => (
-              <option key={option.label} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <select
+          value={sortOrder}
+          onChange={(event) => setSortOrder(event.target.value)}
+          className="text-xs bg-surface-raised border border-border rounded-lg px-2 py-1.5 text-text"
+          aria-label="Sort order"
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.label} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
       {loading ? (
         <div className="space-y-3">
           {[0, 1, 2].map((item) => (
-            <div key={item} className="animate-pulse border border-gray-700 rounded-lg p-4">
-              <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+            <div key={item} className="animate-pulse border border-border rounded-xl p-3">
+              <div className="h-4 bg-surface-raised rounded w-3/4 mb-2"></div>
+              <div className="h-3 bg-surface-raised rounded w-1/2"></div>
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="text-sm text-red-400">{error}</div>
+        <div className="text-sm text-loss">{error}</div>
       ) : articles.length === 0 ? (
-        <div className="text-sm text-gray-400">No watchlist news matches your selected filters.</div>
+        <div className="text-sm text-text-muted">No watchlist news matches your selected filters.</div>
       ) : (
         <div className="space-y-3">
           {articles.map((article, index) => (
@@ -218,28 +212,34 @@ const WatchlistNewsPanel = ({ watchlistId, symbols = [], isWatchlistReady = fals
               href={article.url}
               target="_blank"
               rel="noreferrer"
-              className="block border border-gray-700 hover:border-gray-500 rounded-lg p-4 transition-colors"
+              className="block border border-border hover:border-accent/50 rounded-xl p-3 transition-all duration-150"
             >
               <div className="flex items-start justify-between gap-3 mb-2">
-                <h3 className="text-sm font-semibold text-white">{article.headline}</h3>
+                <h3 className="text-sm font-semibold text-text">{article.headline}</h3>
                 <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${getSentimentChipClasses(article.sentiment)}`}>
                   {getSentimentLabel(article.sentiment)}
                 </span>
               </div>
-              <div className="text-xs text-gray-400">
+              <div className="text-xs text-text-muted">
                 {article.symbol} · {article.source} · {formatPublishedTime(article.publishedAt)}
               </div>
             </a>
           ))}
 
           {loadMoreError && (
-            <div className="text-sm text-red-400">
+            <div className="text-sm text-loss">
               Could not load more watchlist news. Please try again.
             </div>
           )}
 
-          {hasMore && (
-            <Button variant="outline" onClick={handleLoadMore} disabled={loadingMore}>
+          {!showAll && articles.length >= DEFAULT_LIMIT && (
+            <Button variant="ghost" onClick={() => setShowAll(true)} className="w-full">
+              Show more
+            </Button>
+          )}
+
+          {showAll && hasMore && (
+            <Button variant="ghost" onClick={handleLoadMore} disabled={loadingMore} className="w-full">
               {loadingMore ? 'Loading more...' : 'Load more'}
             </Button>
           )}

@@ -7,14 +7,15 @@ const Button = ({
   type = 'button',
   className = ''
 }) => {
-  const baseStyles = 'font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseStyles = 'font-semibold rounded-xl transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-accent/50 disabled:opacity-50 disabled:cursor-not-allowed motion-reduce:transition-none'
   
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
-    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    outline: 'border-2 border-gray-600 hover:bg-gray-700 text-gray-300 focus:ring-gray-500',
+    primary: 'bg-accent hover:bg-accent-hover text-white shadow-sm',
+    secondary: 'bg-surface-raised hover:bg-border/30 text-text border border-border',
+    success: 'bg-gain hover:bg-gain/90 text-white shadow-sm',
+    danger: 'bg-loss hover:bg-loss/90 text-white shadow-sm',
+    ghost: 'hover:bg-surface-raised text-text-muted hover:text-text border border-transparent',
+    outline: 'border border-border hover:bg-surface-raised text-text',
   }
   
   const sizes = {

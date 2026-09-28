@@ -18,31 +18,55 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white dark:text-white light:text-gray-900">Portfolio Dashboard</h1>
-        <Button variant="danger" size="sm" onClick={handleReset}>
-          Reset Portfolio
+    <div className="p-6 max-w-[1400px] mx-auto">
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-text mb-1">Portfolio</h1>
+          <p className="text-text-muted text-xs">Last updated: {new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+        </div>
+        <Button variant="ghost" size="sm" onClick={handleReset}>
+          Reset
         </Button>
       </div>
 
       <div className="space-y-8">
         <PortfolioSummary />
         
-        <WatchlistHighlights />
-        <WatchlistNewsPanel
-          watchlistId={activeWatchlistId}
-          symbols={watchlist}
-          isWatchlistReady={isReady}
-        />
-        
         <div>
-          <h2 className="text-2xl font-semibold text-white dark:text-white light:text-gray-900 mb-4">Your Holdings</h2>
-          <HoldingsTable />
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xs uppercase tracking-wide text-text-muted font-medium">Watchlist</span>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
+          <WatchlistHighlights />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs uppercase tracking-wide text-text-muted font-medium">Your Holdings</span>
+              <div className="h-px flex-1 bg-border"></div>
+            </div>
+            <HoldingsTable />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs uppercase tracking-wide text-text-muted font-medium">News</span>
+              <div className="h-px flex-1 bg-border"></div>
+            </div>
+            <WatchlistNewsPanel
+              watchlistId={activeWatchlistId}
+              symbols={watchlist}
+              isWatchlistReady={isReady}
+            />
+          </div>
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold text-white dark:text-white light:text-gray-900 mb-4">AI Portfolio Analysis</h2>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-xs uppercase tracking-wide text-text-muted font-medium">AI Analysis</span>
+            <div className="h-px flex-1 bg-border"></div>
+          </div>
           <PortfolioCommentary />
         </div>
       </div>

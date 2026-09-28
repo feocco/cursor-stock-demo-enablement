@@ -46,18 +46,18 @@ const Sidebar = () => {
   }, [watchlist, quotes])
 
   return (
-    <div className="w-80 bg-gray-900 dark:bg-gray-900 light:bg-white border-r border-gray-700 dark:border-gray-700 light:border-gray-200 p-4 overflow-y-auto">
+    <div className="w-80 bg-surface border-r border-border p-4 overflow-y-auto">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-white dark:text-white light:text-gray-900">Watchlist</h2>
+        <h2 className="text-xl font-semibold text-text">Watchlist</h2>
         {watchlist.length > 0 && (
-          <p className="text-xs text-gray-400 dark:text-gray-400 light:text-gray-600 mt-1">
+          <p className="text-xs text-text-muted mt-1">
             {watchlist.length} {watchlist.length === 1 ? 'stock' : 'stocks'}
           </p>
         )}
       </div>
       
       {watchlist.length === 0 ? (
-        <div className="text-center text-gray-400 dark:text-gray-400 light:text-gray-600 py-8">
+        <div className="text-center text-text-muted py-8">
           <p className="text-sm">No stocks in watchlist</p>
           <p className="text-xs mt-2">Add stocks to track prices</p>
         </div>
@@ -69,7 +69,7 @@ const Sidebar = () => {
               <div key={symbol} className="relative">
                 {isTopMover && (
                   <div className="absolute -top-2 -right-2 z-10">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
                       🔥 Top Mover
                     </span>
                   </div>

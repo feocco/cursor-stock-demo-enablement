@@ -9,7 +9,7 @@ import TradingPanel from '../components/organisms/TradingPanel'
 import StockChart from '../components/organisms/StockChart'
 import PriceAlertForm from '../components/molecules/PriceAlertForm'
 import PriceAlertsList from '../components/molecules/PriceAlertsList'
-import { formatCurrency } from '../utils/calculations'
+import { formatCurrency, formatPercentage } from '../utils/calculations'
 import { getAlertsForSymbol } from '../utils/priceAlerts'
 
 const StockDetail = () => {
@@ -167,7 +167,7 @@ const StockDetail = () => {
               <div className="flex items-center justify-between">
                 <span className="text-gray-400">Change</span>
                 <span className={`font-semibold ${quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {quote.change >= 0 ? '+' : ''}{formatCurrency(Math.abs(quote.change))} ({quote.changePercent >= 0 ? '+' : ''}{quote.changePercent.toFixed(2)}%)
+                  {formatCurrency(quote.change)} ({formatPercentage(quote.changePercent)})
                 </span>
               </div>
             </div>
