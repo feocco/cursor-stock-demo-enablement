@@ -48,7 +48,7 @@ const NEGATIVE_SENTIMENT_KEYWORDS = [
   'warning',
 ];
 
-const getCacheKey = (type, symbol) => `stock:${type}:${symbol}`;
+const getCacheKey = (type, symbol) => `stock:${type}:v2:${symbol}`;
 
 // Alpha Vantage API client
 const alphaVantageClient = axios.create({
@@ -171,20 +171,30 @@ const getMockHistoryConfig = (period) => {
   return periodConfig[period] || periodConfig['1m'];
 };
 
-const getMockHistoryData = (period) => {
+const getMockHistoryData = (symbol, period) => {
   const { points, stepMs } = getMockHistoryConfig(period);
   const endTime = Date.now();
   const startTime = endTime - ((points - 1) * stepMs);
-  const startingPrice = 148;
+  
+  // Calculate end price to match the deterministic quote price for this symbol
+  const seed = Array.from(symbol).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const basePrice = 100 + (seed % 200) // Same as frontend quote fallback
+  const intervalsSinceEpoch = Math.floor(Date.now() / 5000)
+  const driftSeed = seed + intervalsSinceEpoch
+  const driftPercent = ((driftSeed % 60) - 30) / 10000
+  const endPrice = basePrice * (1 + driftPercent)
+  
+  const startingPrice = endPrice * 0.95; // Start 5% below current price
 
   return Array.from({ length: points }, (_, index) => {
     const timestamp = startTime + (index * stepMs);
-    const trendComponent = ((index / Math.max(points - 1, 1)) - 0.5) * 8;
-    const oscillation = Math.sin(index * 1.35) * 2.4;
+    const progress = index / Math.max(points - 1, 1);
+    const trendComponent = (endPrice - startingPrice) * progress;
+    const oscillation = Math.sin(index * 1.35) * (endPrice * 0.015);
     const open = startingPrice + trendComponent + oscillation;
-    const close = open + Math.cos(index * 0.85) * 1.6;
-    const high = Math.max(open, close) + 1.2 + ((index % 3) * 0.25);
-    const low = Math.min(open, close) - 1.1 - ((index % 2) * 0.2);
+    const close = index === points - 1 ? endPrice : open + Math.cos(index * 0.85) * (endPrice * 0.01);
+    const high = Math.max(open, close) + endPrice * 0.008;
+    const low = Math.min(open, close) - endPrice * 0.007;
     const volume = 900000 + (index * 27500);
 
     return {
@@ -585,7 +595,7 @@ export const getStockHistory = async (symbol, period = '1m') => {
     if (provider === 'mock') {
       // Mock historical data
       logger.info('Using mock data for stock history');
-      history = getMockHistoryData(period);
+      history = getMockHistoryData(normalizedSymbol, period);
     } else if (provider === 'finnhub') {
       try {
         const params = getFinnhubHistoryParams(period);
@@ -596,7 +606,7 @@ export const getStockHistory = async (symbol, period = '1m') => {
         history = formatFinnhubHistory(data);
       } catch (error) {
         logger.warn(`Falling back to mock stock history for ${normalizedSymbol}:`, error);
-        history = getMockHistoryData(period);
+        history = getMockHistoryData(normalizedSymbol, period);
       }
     } else {
       const data = await fetchFromAlphaVantage({

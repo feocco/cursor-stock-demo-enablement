@@ -1,5 +1,6 @@
 import { usePortfolio } from '../context/PortfolioContext'
 import { useWatchlist } from '../context/WatchlistContext'
+import { useMultipleQuotes } from '../hooks/useStockData'
 import PortfolioSummary from '../components/organisms/PortfolioSummary'
 import HoldingsTable from '../components/organisms/HoldingsTable'
 import WatchlistHighlights from '../components/organisms/WatchlistHighlights'
@@ -8,8 +9,12 @@ import PortfolioCommentary from '../components/organisms/PortfolioCommentary'
 import Button from '../components/atoms/Button'
 
 const Dashboard = () => {
-  const { resetPortfolio } = usePortfolio()
+  const { resetPortfolio, holdings } = usePortfolio()
   const { watchlist, activeWatchlistId, isReady } = useWatchlist()
+  
+  // Share a single quotes source across all dashboard components
+  const symbols = holdings.map(h => h.symbol)
+  const { quotes, loading: quotesLoading } = useMultipleQuotes(symbols)
 
   const handleReset = async () => {
     if (window.confirm('Are you sure you want to reset your portfolio? This will delete all holdings and transactions and reset your cash to $100,000.')) {
@@ -30,7 +35,7 @@ const Dashboard = () => {
       </div>
 
       <div className="space-y-8">
-        <PortfolioSummary />
+        <PortfolioSummary quotes={quotes} quotesLoading={quotesLoading} />
         
         <div>
           <div className="flex items-center gap-2 mb-4">
@@ -46,7 +51,7 @@ const Dashboard = () => {
               <span className="text-xs uppercase tracking-wide text-text-muted font-medium">Your Holdings</span>
               <div className="h-px flex-1 bg-border"></div>
             </div>
-            <HoldingsTable />
+            <HoldingsTable quotes={quotes} quotesLoading={quotesLoading} />
           </div>
 
           <div>

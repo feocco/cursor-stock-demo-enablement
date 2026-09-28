@@ -21,13 +21,80 @@ const setCache = (key, data) => {
   cache.set(key, { data, timestamp: Date.now() })
 }
 
+// Helper: Generate deterministic fallback quote
+const generateFallbackQuote = (symbol) => {
+  const seed = Array.from(symbol).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const basePrice = 100 + (seed % 200) // Base price between 100-300
+  
+  // Small bounded drift: up to 0.3% per 5-second interval using timestamp
+  const intervalsSinceEpoch = Math.floor(Date.now() / 5000)
+  const driftSeed = seed + intervalsSinceEpoch
+  const driftPercent = ((driftSeed % 60) - 30) / 10000 // -0.3% to +0.3%
+  const currentPrice = basePrice * (1 + driftPercent)
+  
+  const change = currentPrice * 0.012 * ((seed % 3) - 1) // -1.2%, 0%, or +1.2%
+  const previousClose = currentPrice - change
+  const changePercent = previousClose !== 0 ? (change / previousClose) * 100 : 0
+  
+  return {
+    symbol,
+    currentPrice,
+    change,
+    changePercent,
+    high: Math.max(currentPrice, previousClose) + currentPrice * 0.01,
+    low: Math.min(currentPrice, previousClose) - currentPrice * 0.01,
+    open: previousClose + change * 0.2,
+    previousClose,
+    timestamp: Date.now()
+  }
+}
+
+// Helper: Generate deterministic fallback profile
+const generateFallbackProfile = (symbol) => {
+  const companyNames = {
+    'AAPL': 'Apple Inc.',
+    'GOOGL': 'Alphabet Inc.',
+    'MSFT': 'Microsoft Corporation',
+    'AMZN': 'Amazon.com Inc.',
+    'TSLA': 'Tesla Inc.',
+    'META': 'Meta Platforms Inc.',
+    'NVDA': 'NVIDIA Corporation',
+    'JPM': 'JPMorgan Chase & Co.',
+    'V': 'Visa Inc.',
+    'WMT': 'Walmart Inc.'
+  }
+  
+  const seed = Array.from(symbol).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const marketCap = (seed % 1000 + 500) * 1000000000 // 500B-1500B
+  
+  return {
+    name: companyNames[symbol] || `${symbol} Corporation`,
+    ticker: symbol,
+    marketCapitalization: marketCap,
+    shareOutstanding: marketCap / 150,
+    exchange: 'NASDAQ',
+    logo: '',
+    weburl: '',
+    finnhubIndustry: 'Technology'
+  }
+}
+
 export const stockApi = {
   // Get stock quote (current price)
   async getQuote(symbol) {
     const cacheKey = `quote_${symbol}`
     const cached = getCached(cacheKey)
     if (cached) return cached
-
+    
+    // Skip Finnhub fetch if using demo key - go straight to deterministic fallback
+    const shouldFetch = API_KEY && API_KEY !== 'demo'
+    
+    if (!shouldFetch) {
+      const quote = generateFallbackQuote(symbol)
+      setCache(cacheKey, quote)
+      return quote
+    }
+    
     try {
       const response = await fetch(
         `${BASE_URL}/quote?symbol=${symbol}&token=${API_KEY}`
@@ -52,23 +119,7 @@ export const stockApi = {
       return quote
     } catch (error) {
       console.error('Error fetching quote:', error)
-      // Return mock data for demo with consistent change/changePercent signs
-      const currentPrice = 150 + Math.random() * 50
-      const change = (Math.random() - 0.5) * 10
-      const previousClose = currentPrice - change
-      const changePercent = previousClose !== 0 ? (change / previousClose) * 100 : 0
-      
-      return {
-        symbol,
-        currentPrice,
-        change,
-        changePercent,
-        high: Math.max(currentPrice, previousClose) + Math.random() * 5,
-        low: Math.min(currentPrice, previousClose) - Math.random() * 5,
-        open: previousClose + (Math.random() - 0.5) * 2,
-        previousClose,
-        timestamp: Date.now()
-      }
+      return generateFallbackQuote(symbol)
     }
   },
 
@@ -77,7 +128,16 @@ export const stockApi = {
     const cacheKey = `profile_${symbol}`
     const cached = getCached(cacheKey)
     if (cached) return cached
-
+    
+    // Skip Finnhub fetch if using demo key
+    const shouldFetch = API_KEY && API_KEY !== 'demo'
+    
+    if (!shouldFetch) {
+      const profile = generateFallbackProfile(symbol)
+      setCache(cacheKey, profile)
+      return profile
+    }
+    
     try {
       const response = await fetch(
         `${BASE_URL}/stock/profile2?symbol=${symbol}&token=${API_KEY}`
@@ -89,13 +149,7 @@ export const stockApi = {
       return data
     } catch (error) {
       console.error('Error fetching profile:', error)
-      return {
-        name: symbol,
-        ticker: symbol,
-        marketCapitalization: 0,
-        shareOutstanding: 0,
-        exchange: 'NASDAQ'
-      }
+      return generateFallbackProfile(symbol)
     }
   },
 

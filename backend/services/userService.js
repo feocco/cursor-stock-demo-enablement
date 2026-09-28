@@ -9,9 +9,18 @@ const DEFAULT_USER_PASSWORD = 'default_password_change_in_production';
  * Get or create the default user for single-user mode
  */
 export const getOrCreateDefaultUser = async () => {
-  // Try to find existing default user
-  let user = await prisma.user.findUnique({
+  // Use upsert to avoid race condition when multiple concurrent calls try to create
+  const hashedPassword = await bcrypt.hash(DEFAULT_USER_PASSWORD, 10);
+  
+  const user = await prisma.user.upsert({
     where: { email: DEFAULT_USER_EMAIL },
+    update: {},
+    create: {
+      email: DEFAULT_USER_EMAIL,
+      password: hashedPassword,
+      firstName: 'Default',
+      lastName: 'User',
+    },
     select: {
       id: true,
       email: true,
@@ -19,26 +28,6 @@ export const getOrCreateDefaultUser = async () => {
       lastName: true,
     },
   });
-
-  if (!user) {
-    // Create default user
-    const hashedPassword = await bcrypt.hash(DEFAULT_USER_PASSWORD, 10);
-    
-    user = await prisma.user.create({
-      data: {
-        email: DEFAULT_USER_EMAIL,
-        password: hashedPassword,
-        firstName: 'Default',
-        lastName: 'User',
-      },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-      },
-    });
-  }
 
   // Generate JWT token
   const token = jwt.sign(

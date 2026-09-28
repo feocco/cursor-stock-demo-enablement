@@ -1,5 +1,4 @@
 import { usePortfolio } from '../../context/PortfolioContext'
-import { useMultipleQuotes } from '../../hooks/useStockData'
 import { 
   formatCurrency, 
   formatPercentage, 
@@ -10,10 +9,8 @@ import Card from '../atoms/Card'
 import Badge from '../atoms/Badge'
 import Skeleton from '../atoms/Skeleton'
 
-const PortfolioSummary = () => {
+const PortfolioSummary = ({ quotes = {}, quotesLoading = false }) => {
   const { cash, holdings } = usePortfolio()
-  const symbols = holdings.map(h => h.symbol)
-  const { quotes, loading } = useMultipleQuotes(symbols)
 
   const currentPrices = {}
   Object.keys(quotes).forEach(symbol => {
@@ -29,7 +26,7 @@ const PortfolioSummary = () => {
   const isPositive = totalPnL > 0
   const isNegative = totalPnL < 0
   const isZero = totalPnL === 0
-  const isLoading = loading && holdings.length > 0
+  const isLoading = quotesLoading && holdings.length > 0
 
   if (isLoading) {
     return (

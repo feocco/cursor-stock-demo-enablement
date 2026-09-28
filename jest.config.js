@@ -14,4 +14,5 @@ export default {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+  maxWorkers: 1, // Run tests sequentially to avoid shared DB conflicts
 };
