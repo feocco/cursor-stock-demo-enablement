@@ -20,7 +20,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-white">Portfolio Dashboard</h1>
+        <h1 className="text-4xl font-bold text-white dark:text-white light:text-gray-900">Portfolio Dashboard</h1>
         <Button variant="danger" size="sm" onClick={handleReset}>
           Reset Portfolio
         </Button>
@@ -37,12 +37,12 @@ const Dashboard = () => {
         />
         
         <div>
-          <h2 className="text-2xl font-semibold text-white mb-4">Your Holdings</h2>
+          <h2 className="text-2xl font-semibold text-white dark:text-white light:text-gray-900 mb-4">Your Holdings</h2>
           <HoldingsTable />
         </div>
 
         <div>
-          <h2 className="text-2xl font-semibold text-white mb-4">AI Portfolio Analysis</h2>
+          <h2 className="text-2xl font-semibold text-white dark:text-white light:text-gray-900 mb-4">AI Portfolio Analysis</h2>
           <PortfolioCommentary />
         </div>
       </div>

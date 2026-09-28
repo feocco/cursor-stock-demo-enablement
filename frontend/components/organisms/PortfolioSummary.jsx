@@ -31,7 +31,7 @@ const PortfolioSummary = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <div key={i} className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-6">
             <Skeleton className="w-24 mb-3" />
             <Skeleton className="w-32 h-9 mb-1" />
             {i === 3 && <Skeleton className="w-20 h-5" />}
@@ -43,29 +43,29 @@ const PortfolioSummary = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="text-gray-400 text-sm mb-2">Total Value</div>
-        <div className="text-white text-3xl font-bold">
+      <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-6">
+        <div className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-sm mb-2">Total Value</div>
+        <div className="text-white dark:text-white light:text-gray-900 text-3xl font-bold">
           {formatCurrency(totalValue)}
         </div>
       </div>
 
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="text-gray-400 text-sm mb-2">Portfolio Value</div>
-        <div className="text-white text-3xl font-bold">
+      <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-6">
+        <div className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-sm mb-2">Portfolio Value</div>
+        <div className="text-white dark:text-white light:text-gray-900 text-3xl font-bold">
           {formatCurrency(portfolioValue)}
         </div>
       </div>
 
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="text-gray-400 text-sm mb-2">Cash Balance</div>
-        <div className="text-white text-3xl font-bold">
+      <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-6">
+        <div className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-sm mb-2">Cash Balance</div>
+        <div className="text-white dark:text-white light:text-gray-900 text-3xl font-bold">
           {formatCurrency(cash)}
         </div>
       </div>
 
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="text-gray-400 text-sm mb-2">Total P&L</div>
+      <div className="bg-gray-800 dark:bg-gray-800 light:bg-white border border-gray-700 dark:border-gray-700 light:border-gray-200 rounded-lg p-6">
+        <div className="text-gray-400 dark:text-gray-400 light:text-gray-600 text-sm mb-2">Total P&L</div>
         <div className={`text-3xl font-bold ${isPositive ? 'text-gain' : 'text-loss'}`}>
           {formatCurrency(totalPnL)}
         </div>

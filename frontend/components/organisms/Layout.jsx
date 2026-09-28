@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-900 dark:bg-gray-900 light:bg-gray-50 flex flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden relative">
         {/* Desktop Sidebar */}
@@ -43,8 +43,8 @@ const Layout = ({ children }) => {
       </div>
       
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-4 px-6">
-        <div className="flex items-center justify-between text-sm text-gray-400">
+      <footer className="bg-gray-800 dark:bg-gray-800 light:bg-white border-t border-gray-700 dark:border-gray-700 light:border-gray-200 py-4 px-6">
+        <div className="flex items-center justify-between text-sm text-gray-400 dark:text-gray-400 light:text-gray-600">
           <span>Stock Trading Demo</span>
           <span>Market data is simulated for demonstration purposes</span>
         </div>

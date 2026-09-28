@@ -46,18 +46,18 @@ const Sidebar = () => {
   }, [watchlist, quotes])
 
   return (
-    <div className="w-80 bg-gray-900 border-r border-gray-700 p-4 overflow-y-auto">
+    <div className="w-80 bg-gray-900 dark:bg-gray-900 light:bg-white border-r border-gray-700 dark:border-gray-700 light:border-gray-200 p-4 overflow-y-auto">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-white">Watchlist</h2>
+        <h2 className="text-xl font-semibold text-white dark:text-white light:text-gray-900">Watchlist</h2>
         {watchlist.length > 0 && (
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-400 dark:text-gray-400 light:text-gray-600 mt-1">
             {watchlist.length} {watchlist.length === 1 ? 'stock' : 'stocks'}
           </p>
         )}
       </div>
       
       {watchlist.length === 0 ? (
-        <div className="text-center text-gray-400 py-8">
+        <div className="text-center text-gray-400 dark:text-gray-400 light:text-gray-600 py-8">
           <p className="text-sm">No stocks in watchlist</p>
           <p className="text-xs mt-2">Add stocks to track prices</p>
         </div>
