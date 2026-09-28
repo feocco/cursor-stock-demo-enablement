@@ -55,7 +55,8 @@ const HoldingsTable = ({ quotes = {}, quotesLoading = false }) => {
 
   return (
     <div className="bg-surface border border-border rounded-xl overflow-hidden">
-      <div className="overflow-x-auto">
+      {/* Desktop table view */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full">
           <thead className="bg-surface-raised">
             <tr>
@@ -155,6 +156,91 @@ const HoldingsTable = ({ quotes = {}, quotesLoading = false }) => {
             </tr>
           </tfoot>
         </table>
+      </div>
+
+      {/* Mobile card view */}
+      <div className="sm:hidden divide-y divide-border">
+        {isInitialLoading ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="p-4 space-y-2">
+              <Skeleton className="w-24 h-6" />
+              <Skeleton className="w-full h-4" />
+              <Skeleton className="w-full h-4" />
+            </div>
+          ))
+        ) : (
+          <>
+            {holdings.map((holding) => {
+              const quote = quotes[holding.symbol]
+              const currentPrice = quote?.currentPrice || holding.avgPrice
+              const marketValue = holding.quantity * currentPrice
+              const pnl = calculateHoldingPnL(holding, currentPrice)
+              const pnlPercent = calculatePnLPercentage(holding, currentPrice)
+              const isPositive = pnl >= 0
+
+              return (
+                <div
+                  key={holding.symbol}
+                  onClick={() => navigate(`/stock/${holding.symbol}`)}
+                  className="p-4 hover:bg-surface-raised cursor-pointer transition-colors"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${getSymbolColor(holding.symbol)}`}>
+                      {holding.symbol.substring(0, 2)}
+                    </div>
+                    <div className="text-lg font-semibold text-accent">
+                      {holding.symbol}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <div className="text-text-muted text-xs">Quantity</div>
+                      <div className="text-text font-medium">{formatNumber(holding.quantity)}</div>
+                    </div>
+                    <div>
+                      <div className="text-text-muted text-xs">Avg Price</div>
+                      <div className="text-text font-medium">{formatCurrency(holding.avgPrice)}</div>
+                    </div>
+                    <div>
+                      <div className="text-text-muted text-xs">Current Price</div>
+                      <div className="text-text font-medium">
+                        {quotesLoading ? (
+                          <div className="h-4 w-16 bg-surface-raised rounded animate-pulse"></div>
+                        ) : (
+                          formatCurrency(currentPrice)
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-text-muted text-xs">Market Value</div>
+                      <div className="text-text font-semibold">{formatCurrency(marketValue)}</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <div className="flex justify-between items-center">
+                      <div className="text-text-muted text-xs">P&L</div>
+                      <div className={`font-semibold ${isPositive ? 'text-gain' : 'text-loss'}`}>
+                        <div className="text-right">{formatCurrency(pnl)}</div>
+                        <div className="text-xs text-right">{formatPercentage(pnlPercent)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+            <div className="p-4 bg-surface-raised">
+              <div className="flex justify-between items-center">
+                <div className="text-sm font-semibold text-text">Total</div>
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-text">{formatCurrency(totals.marketValue)}</div>
+                  <div className={`text-sm font-semibold ${totalsArePositive ? 'text-gain' : 'text-loss'}`}>
+                    {formatCurrency(totalPnL)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

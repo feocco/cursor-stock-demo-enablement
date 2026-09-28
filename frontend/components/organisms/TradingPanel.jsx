@@ -50,8 +50,8 @@ const TradingPanel = ({ symbol, currentPrice }) => {
   }
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <h2 className="text-xl font-semibold text-white mb-6">Trade {symbol}</h2>
+    <div className="bg-surface border border-border rounded-lg p-6">
+      <h2 className="text-xl font-semibold text-text mb-6">Trade {symbol}</h2>
 
       {notification && (
         <div className={`mb-4 p-4 rounded-lg ${
@@ -64,20 +64,20 @@ const TradingPanel = ({ symbol, currentPrice }) => {
       )}
 
       <div className="space-y-4 mb-6">
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">Available Cash</div>
-          <div className="text-white text-lg font-semibold">
+        <div className="bg-surface-raised rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">Available Cash</div>
+          <div className="text-text text-lg font-semibold">
             {formatCurrency(cash)}
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">Your Holdings</div>
-          <div className="text-white text-lg font-semibold">
+        <div className="bg-surface-raised rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">Your Holdings</div>
+          <div className="text-text text-lg font-semibold">
             {holding ? (
               <>
                 {formatNumber(holding.quantity)} {holding.quantity === 1 ? 'share' : 'shares'}
-                <div className="text-sm text-gray-400 mt-1">
+                <div className="text-sm text-text-muted mt-1">
                   Avg Price: {formatCurrency(holding.avgPrice)}
                 </div>
               </>

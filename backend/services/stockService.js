@@ -22,6 +22,7 @@ const POSITIVE_SENTIMENT_KEYWORDS = [
   'rise',
   'rises',
   'surge',
+  'surges',
   'beat',
   'beats',
   'strong',
@@ -29,6 +30,14 @@ const POSITIVE_SENTIMENT_KEYWORDS = [
   'profit',
   'bullish',
   'upgrade',
+  'upgrades',
+  'upbeat',
+  'soar',
+  'soars',
+  'rally',
+  'rallies',
+  'outperform',
+  'outperforms',
 ];
 
 const NEGATIVE_SENTIMENT_KEYWORDS = [
@@ -45,7 +54,24 @@ const NEGATIVE_SENTIMENT_KEYWORDS = [
   'loss',
   'bearish',
   'downgrade',
+  'downgrades',
   'warning',
+  'warnings',
+  'slip',
+  'slips',
+  'pressure',
+  'cut',
+  'cuts',
+  'lawsuit',
+  'lawsuits',
+  'plunge',
+  'plunges',
+  'tumble',
+  'tumbles',
+  'underperform',
+  'underperforms',
+  'weaken',
+  'weakens',
 ];
 
 const getCacheKey = (type, symbol) => `stock:${type}:v2:${symbol}`;
@@ -411,14 +437,31 @@ const classifyNewsSentiment = (headline = '', summary = '') => {
   const text = `${headline} ${summary}`.toLowerCase();
   let sentimentScore = 0;
 
+  // Tokenize on word boundaries to avoid substring false positives
+  const words = text.split(/[^a-z]+/).filter(Boolean);
+  const wordSet = new Set(words);
+
+  // Check multi-word negative phrases first (higher priority)
+  const negativePhrases = [
+    'edges down',
+    'edged down',
+  ];
+
+  negativePhrases.forEach((phrase) => {
+    if (text.includes(phrase)) {
+      sentimentScore -= 1;
+    }
+  });
+
+  // Check single-word keywords (whole word matches only)
   POSITIVE_SENTIMENT_KEYWORDS.forEach((keyword) => {
-    if (text.includes(keyword)) {
+    if (wordSet.has(keyword)) {
       sentimentScore += 1;
     }
   });
 
   NEGATIVE_SENTIMENT_KEYWORDS.forEach((keyword) => {
-    if (text.includes(keyword)) {
+    if (wordSet.has(keyword)) {
       sentimentScore -= 1;
     }
   });
@@ -433,6 +476,9 @@ const classifyNewsSentiment = (headline = '', summary = '') => {
 
   return 'neutral';
 };
+
+// Export for testing
+export { classifyNewsSentiment };
 
 const normalizeNewsArticles = (symbol, articles) => {
   return articles.map((article, index) => {

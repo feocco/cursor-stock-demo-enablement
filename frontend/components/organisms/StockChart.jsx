@@ -86,10 +86,10 @@ const StockChart = ({ symbol }) => {
 
   if (loading) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-700 rounded w-32 mb-4"></div>
-          <div className="h-96 bg-gray-700 rounded"></div>
+          <div className="h-8 bg-surface-raised rounded w-32 mb-4"></div>
+          <div className="h-96 bg-surface-raised rounded"></div>
         </div>
       </div>
     )
@@ -97,15 +97,15 @@ const StockChart = ({ symbol }) => {
 
   if (error) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="bg-surface border border-border rounded-lg p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Price Chart</h2>
-            <p className="text-sm text-gray-400">
+            <h2 className="text-xl font-semibold text-text">Price Chart</h2>
+            <p className="text-sm text-text-muted">
               Historical prices come from the backend and may fall back to demo history when provider candles are unavailable.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {timeRanges.map((range) => (
               <Button
                 key={range.label}
@@ -130,15 +130,15 @@ const StockChart = ({ symbol }) => {
 
   if (chartData.length === 0) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-        <div className="flex items-center justify-between gap-4 mb-4">
+      <div className="bg-surface border border-border rounded-lg p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
-            <h2 className="text-xl font-semibold text-white">Price Chart</h2>
-            <p className="text-sm text-gray-400">
+            <h2 className="text-xl font-semibold text-text">Price Chart</h2>
+            <p className="text-sm text-text-muted">
               Historical prices come from the backend and may fall back to demo history when provider candles are unavailable.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {timeRanges.map((range) => (
               <Button
                 key={range.label}
@@ -151,7 +151,7 @@ const StockChart = ({ symbol }) => {
             ))}
           </div>
         </div>
-        <div className="h-96 flex items-center justify-center text-gray-400">
+        <div className="h-96 flex items-center justify-center text-text-muted">
           No chart data available
         </div>
       </div>
@@ -164,15 +164,15 @@ const StockChart = ({ symbol }) => {
   const lineColor = isPositive ? '#10b981' : '#ef4444'
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <div className="flex items-center justify-between gap-4 mb-6">
+    <div className="bg-surface border border-border rounded-lg p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl font-semibold text-white">Price Chart</h2>
-          <p className="text-sm text-gray-400">
+          <h2 className="text-xl font-semibold text-text">Price Chart</h2>
+          <p className="text-sm text-text-muted">
             Historical prices come from the backend and may fall back to demo history when provider candles are unavailable.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {timeRanges.map((range) => (
             <Button
               key={range.label}

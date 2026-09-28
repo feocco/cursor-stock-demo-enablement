@@ -45,14 +45,14 @@ const StockDetail = () => {
 
   const getSentimentChipClasses = (sentiment) => {
     if (sentiment === 'positive') {
-      return 'bg-green-500/20 text-green-300 border border-green-500/30'
+      return 'bg-gain/10 text-gain border border-gain/20'
     }
 
     if (sentiment === 'negative') {
-      return 'bg-red-500/20 text-red-300 border border-red-500/30'
+      return 'bg-loss/10 text-loss border border-loss/20'
     }
 
-    return 'bg-gray-600/30 text-gray-300 border border-gray-500/40'
+    return 'bg-surface-raised text-text-muted border border-border'
   }
 
   const getSentimentLabel = (sentiment) => {
@@ -79,9 +79,9 @@ const StockDetail = () => {
     return (
       <div className="p-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-700 rounded w-48 mb-4"></div>
-          <div className="h-12 bg-gray-700 rounded w-64 mb-8"></div>
-          <div className="h-96 bg-gray-700 rounded"></div>
+          <div className="h-8 bg-surface-raised rounded w-48 mb-4"></div>
+          <div className="h-12 bg-surface-raised rounded w-64 mb-8"></div>
+          <div className="h-96 bg-surface-raised rounded"></div>
         </div>
       </div>
     )
@@ -90,7 +90,7 @@ const StockDetail = () => {
   if (!quote) {
     return (
       <div className="p-6">
-        <div className="text-center text-gray-400">
+        <div className="text-center text-text-muted">
           Failed to load stock data
         </div>
       </div>
@@ -103,8 +103,8 @@ const StockDetail = () => {
       <div className="mb-8">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">{upperSymbol}</h1>
-            {profile && <p className="text-xl text-gray-400">{profile.name}</p>}
+            <h1 className="text-4xl font-bold text-text mb-2">{upperSymbol}</h1>
+            {profile && <p className="text-xl text-text-muted">{profile.name}</p>}
           </div>
           <Button
             variant={inWatchlist ? 'secondary' : 'outline'}
@@ -128,45 +128,45 @@ const StockDetail = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">Open</div>
-          <div className="text-white font-semibold">{formatCurrency(quote.open)}</div>
+        <div className="bg-surface border border-border rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">Open</div>
+          <div className="text-text font-semibold">{formatCurrency(quote.open)}</div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">High</div>
-          <div className="text-white font-semibold">{formatCurrency(quote.high)}</div>
+        <div className="bg-surface border border-border rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">High</div>
+          <div className="text-text font-semibold">{formatCurrency(quote.high)}</div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">Low</div>
-          <div className="text-white font-semibold">{formatCurrency(quote.low)}</div>
+        <div className="bg-surface border border-border rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">Low</div>
+          <div className="text-text font-semibold">{formatCurrency(quote.low)}</div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-          <div className="text-gray-400 text-sm mb-1">Prev Close</div>
-          <div className="text-white font-semibold">{formatCurrency(quote.previousClose)}</div>
+        <div className="bg-surface border border-border rounded-lg p-4">
+          <div className="text-text-muted text-sm mb-1">Prev Close</div>
+          <div className="text-text font-semibold">{formatCurrency(quote.previousClose)}</div>
         </div>
       </div>
 
       {/* Price Summary and Trading Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">Price Summary</h2>
+          <div className="bg-surface border border-border rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-text mb-6">Price Summary</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Current Price</span>
-                <span className="text-white font-semibold text-lg">{formatCurrency(quote.currentPrice)}</span>
+                <span className="text-text-muted">Current Price</span>
+                <span className="text-text font-semibold text-lg">{formatCurrency(quote.currentPrice)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Previous Close</span>
-                <span className="text-white">{formatCurrency(quote.previousClose)}</span>
+                <span className="text-text-muted">Previous Close</span>
+                <span className="text-text">{formatCurrency(quote.previousClose)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Day's Range</span>
-                <span className="text-white">{formatCurrency(quote.low)} - {formatCurrency(quote.high)}</span>
+                <span className="text-text-muted">Day's Range</span>
+                <span className="text-text">{formatCurrency(quote.low)} - {formatCurrency(quote.high)}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Change</span>
-                <span className={`font-semibold ${quote.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                <span className="text-text-muted">Change</span>
+                <span className={`font-semibold ${quote.change >= 0 ? 'text-gain' : 'text-loss'}`}>
                   {formatCurrency(quote.change)} ({formatPercentage(quote.changePercent)})
                 </span>
               </div>
@@ -177,22 +177,22 @@ const StockDetail = () => {
             <StockChart symbol={upperSymbol} />
           </div>
 
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mt-6">
-            <h2 className="text-xl font-semibold text-white mb-4">News</h2>
+          <div className="bg-surface border border-border rounded-lg p-6 mt-6">
+            <h2 className="text-xl font-semibold text-text mb-4">News</h2>
 
             {newsLoading ? (
               <div className="space-y-3">
                 {[0, 1, 2].map((item) => (
-                  <div key={item} className="animate-pulse border border-gray-700 rounded-lg p-4">
-                    <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-700 rounded w-1/2"></div>
+                  <div key={item} className="animate-pulse border border-border rounded-lg p-4">
+                    <div className="h-4 bg-surface-raised rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-surface-raised rounded w-1/2"></div>
                   </div>
                 ))}
               </div>
             ) : newsError ? (
               <div className="text-sm text-red-400">Unable to load news right now.</div>
             ) : news.length === 0 ? (
-              <div className="text-sm text-gray-400">No recent news available.</div>
+              <div className="text-sm text-text-muted">No recent news available.</div>
             ) : (
               <div className="space-y-3">
                 {news.map((article) => (
@@ -201,15 +201,15 @@ const StockDetail = () => {
                     href={article.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block border border-gray-700 hover:border-gray-500 rounded-lg p-4 transition-colors"
+                    className="block border border-border hover:border-border/60 rounded-lg p-4 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-sm font-semibold text-white">{article.headline}</h3>
+                      <h3 className="text-sm font-semibold text-text">{article.headline}</h3>
                       <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${getSentimentChipClasses(article.sentiment)}`}>
                         {getSentimentLabel(article.sentiment)}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-text-muted">
                       {article.source} · {formatPublishedTime(article.publishedAt)}
                     </div>
                   </a>
@@ -237,20 +237,20 @@ const StockDetail = () => {
         <div className="space-y-6">
           <TradingPanel symbol={upperSymbol} currentPrice={quote.currentPrice} />
           
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Price Alerts</h2>
+          <div className="bg-surface border border-border rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-text mb-4">Price Alerts</h2>
             
             {permissionStatus === 'denied' && (
-              <div className="mb-4 p-3 bg-yellow-900/20 border border-yellow-700 rounded-lg">
-                <p className="text-sm text-yellow-400">
+              <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <p className="text-sm text-yellow-700 dark:text-yellow-400">
                   Browser notifications are blocked. Enable them in your browser settings to receive alerts.
                 </p>
               </div>
             )}
             
             {permissionStatus === 'default' && (
-              <div className="mb-4 p-3 bg-blue-900/20 border border-blue-700 rounded-lg">
-                <p className="text-sm text-blue-400 mb-2">
+              <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-400 mb-2">
                   Enable notifications to get alerted when price targets are reached.
                 </p>
                 <Button variant="primary" size="sm" onClick={requestPermission}>
