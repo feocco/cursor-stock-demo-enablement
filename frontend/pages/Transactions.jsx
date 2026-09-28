@@ -11,7 +11,7 @@ const Transactions = () => {
     return (
       <div className="p-6 max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-text mb-8">Transaction History</h1>
-        <div className="bg-surface border border-border rounded-lg p-8">
+        <div className="bg-surface border border-border rounded-xl p-8">
           <div className="text-center text-text-muted">
             <p className="text-xl mb-2">No transactions yet</p>
             <p className="text-sm">Your trading history will appear here</p>
@@ -25,7 +25,7 @@ const Transactions = () => {
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold text-text mb-8">Transaction History</h1>
 
-      <div className="bg-surface border border-border rounded-lg overflow-hidden">
+      <div className="bg-surface border border-border rounded-xl overflow-hidden">
         {/* Desktop table view */}
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full">

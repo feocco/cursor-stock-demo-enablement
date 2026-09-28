@@ -103,39 +103,39 @@ const TradeModal = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 w-full max-w-md mx-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="bg-surface border border-border rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">
+          <h2 className="text-2xl font-bold text-text">
             {isBuy ? 'Buy' : 'Sell'} {symbol}
           </h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-white text-2xl"
+            className="text-text-muted hover:text-text text-2xl transition-colors"
           >
             ×
           </button>
         </div>
 
         <div className="space-y-4 mb-6">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <div className="text-gray-400 text-sm mb-1">Current Price</div>
-            <div className="text-white text-xl font-bold">
+          <div className="bg-surface-raised rounded-lg p-4">
+            <div className="text-text-muted text-sm mb-1">Current Price</div>
+            <div className="text-text text-xl font-bold tabular-nums">
               {formatCurrency(priceToUse)}
             </div>
           </div>
 
           {!isBuy && (
-            <div className="bg-gray-700 rounded-lg p-4">
-              <div className="text-gray-400 text-sm mb-1">Available Shares</div>
-              <div className="text-white text-xl font-bold">{formatNumber(availableShares)}</div>
+            <div className="bg-surface-raised rounded-lg p-4">
+              <div className="text-text-muted text-sm mb-1">Available Shares</div>
+              <div className="text-text text-xl font-bold tabular-nums">{formatNumber(availableShares)}</div>
             </div>
           )}
 
           {isBuy && (
-            <div className="bg-gray-700 rounded-lg p-4">
-              <div className="text-gray-400 text-sm mb-1">Available Cash</div>
-              <div className="text-white text-xl font-bold">
+            <div className="bg-surface-raised rounded-lg p-4">
+              <div className="text-text-muted text-sm mb-1">Available Cash</div>
+              <div className="text-text text-xl font-bold tabular-nums">
                 {formatCurrency(availableCash)}
               </div>
             </div>
@@ -156,30 +156,30 @@ const TradeModal = ({
               <button
                 type="button"
                 onClick={() => handleQuickAmount(0.25)}
-                className="flex-1 px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
+                className="flex-1 px-3 py-1.5 text-sm bg-surface-raised hover:bg-border/30 text-text border border-border rounded-lg transition-all duration-150"
               >
                 25%
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickAmount(0.5)}
-                className="flex-1 px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
+                className="flex-1 px-3 py-1.5 text-sm bg-surface-raised hover:bg-border/30 text-text border border-border rounded-lg transition-all duration-150"
               >
                 50%
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickAmount(1.0)}
-                className="flex-1 px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors"
+                className="flex-1 px-3 py-1.5 text-sm bg-surface-raised hover:bg-border/30 text-text border border-border rounded-lg transition-all duration-150"
               >
                 Max
               </button>
             </div>
           </div>
 
-          <div className="bg-gray-700 rounded-lg p-4">
-            <div className="text-gray-400 text-sm mb-1">Total</div>
-            <div className="text-white text-xl font-bold">
+          <div className="bg-surface-raised rounded-lg p-4">
+            <div className="text-text-muted text-sm mb-1">Total</div>
+            <div className="text-text text-xl font-bold tabular-nums">
               {formatCurrency(total)}
             </div>
           </div>

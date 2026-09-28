@@ -128,45 +128,45 @@ const StockDetail = () => {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-surface border border-border rounded-lg p-4">
+        <div className="bg-surface border border-border rounded-xl p-4">
           <div className="text-text-muted text-sm mb-1">Open</div>
-          <div className="text-text font-semibold">{formatCurrency(quote.open)}</div>
+          <div className="text-text font-semibold tabular-nums">{formatCurrency(quote.open)}</div>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-4">
+        <div className="bg-surface border border-border rounded-xl p-4">
           <div className="text-text-muted text-sm mb-1">High</div>
-          <div className="text-text font-semibold">{formatCurrency(quote.high)}</div>
+          <div className="text-text font-semibold tabular-nums">{formatCurrency(quote.high)}</div>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-4">
+        <div className="bg-surface border border-border rounded-xl p-4">
           <div className="text-text-muted text-sm mb-1">Low</div>
-          <div className="text-text font-semibold">{formatCurrency(quote.low)}</div>
+          <div className="text-text font-semibold tabular-nums">{formatCurrency(quote.low)}</div>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-4">
+        <div className="bg-surface border border-border rounded-xl p-4">
           <div className="text-text-muted text-sm mb-1">Prev Close</div>
-          <div className="text-text font-semibold">{formatCurrency(quote.previousClose)}</div>
+          <div className="text-text font-semibold tabular-nums">{formatCurrency(quote.previousClose)}</div>
         </div>
       </div>
 
       {/* Price Summary and Trading Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-surface border border-border rounded-lg p-6">
+          <div className="bg-surface border border-border rounded-xl p-6">
             <h2 className="text-xl font-semibold text-text mb-6">Price Summary</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-text-muted">Current Price</span>
-                <span className="text-text font-semibold text-lg">{formatCurrency(quote.currentPrice)}</span>
+                <span className="text-text font-semibold text-lg tabular-nums">{formatCurrency(quote.currentPrice)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-text-muted">Previous Close</span>
-                <span className="text-text">{formatCurrency(quote.previousClose)}</span>
+                <span className="text-text tabular-nums">{formatCurrency(quote.previousClose)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-text-muted">Day's Range</span>
-                <span className="text-text">{formatCurrency(quote.low)} - {formatCurrency(quote.high)}</span>
+                <span className="text-text tabular-nums">{formatCurrency(quote.low)} - {formatCurrency(quote.high)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-text-muted">Change</span>
-                <span className={`font-semibold ${quote.change >= 0 ? 'text-gain' : 'text-loss'}`}>
+                <span className={`font-semibold tabular-nums ${quote.change >= 0 ? 'text-gain' : 'text-loss'}`}>
                   {formatCurrency(quote.change)} ({formatPercentage(quote.changePercent)})
                 </span>
               </div>
@@ -177,20 +177,20 @@ const StockDetail = () => {
             <StockChart symbol={upperSymbol} />
           </div>
 
-          <div className="bg-surface border border-border rounded-lg p-6 mt-6">
-            <h2 className="text-xl font-semibold text-text mb-4">News</h2>
+          <div className="bg-surface border border-border rounded-xl p-6 mt-6">
+            <h2 className="text-xl font-semibold text-text mb-4">News & Sentiment</h2>
 
             {newsLoading ? (
               <div className="space-y-3">
                 {[0, 1, 2].map((item) => (
-                  <div key={item} className="animate-pulse border border-border rounded-lg p-4">
+                  <div key={item} className="animate-pulse border border-border rounded-xl p-4">
                     <div className="h-4 bg-surface-raised rounded w-3/4 mb-2"></div>
                     <div className="h-3 bg-surface-raised rounded w-1/2"></div>
                   </div>
                 ))}
               </div>
             ) : newsError ? (
-              <div className="text-sm text-red-400">Unable to load news right now.</div>
+              <div className="text-sm text-loss">Unable to load news right now.</div>
             ) : news.length === 0 ? (
               <div className="text-sm text-text-muted">No recent news available.</div>
             ) : (
@@ -201,11 +201,11 @@ const StockDetail = () => {
                     href={article.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block border border-border hover:border-border/60 rounded-lg p-4 transition-colors"
+                    className="block border border-border hover:border-accent/50 hover:shadow-lg hover:shadow-accent/5 rounded-xl p-4 transition-all duration-150"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-sm font-semibold text-text">{article.headline}</h3>
-                      <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${getSentimentChipClasses(article.sentiment)}`}>
+                      <span className={`text-xs px-2 py-1 rounded-md whitespace-nowrap font-medium ${getSentimentChipClasses(article.sentiment)}`}>
                         {getSentimentLabel(article.sentiment)}
                       </span>
                     </div>
@@ -216,7 +216,7 @@ const StockDetail = () => {
                 ))}
 
                 {newsLoadMoreError && (
-                  <div className="text-sm text-red-400">
+                  <div className="text-sm text-loss">
                     Could not load more news. Please try again.
                   </div>
                 )}
@@ -237,20 +237,20 @@ const StockDetail = () => {
         <div className="space-y-6">
           <TradingPanel symbol={upperSymbol} currentPrice={quote.currentPrice} />
           
-          <div className="bg-surface border border-border rounded-lg p-6">
+          <div className="bg-surface border border-border rounded-xl p-6">
             <h2 className="text-xl font-semibold text-text mb-4">Price Alerts</h2>
             
             {permissionStatus === 'denied' && (
-              <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                <p className="text-sm text-yellow-700 dark:text-yellow-400">
+              <div className="mb-4 p-3 bg-loss/10 border border-loss/20 rounded-xl">
+                <p className="text-sm text-loss">
                   Browser notifications are blocked. Enable them in your browser settings to receive alerts.
                 </p>
               </div>
             )}
             
             {permissionStatus === 'default' && (
-              <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-400 mb-2">
+              <div className="mb-4 p-3 bg-accent/10 border border-accent/20 rounded-xl">
+                <p className="text-sm text-accent mb-2">
                   Enable notifications to get alerted when price targets are reached.
                 </p>
                 <Button variant="primary" size="sm" onClick={requestPermission}>
@@ -260,7 +260,7 @@ const StockDetail = () => {
             )}
             
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-300 mb-3">Create New Alert</h3>
+              <h3 className="text-sm font-medium text-text-muted mb-3">Create New Alert</h3>
               <PriceAlertForm
                 symbol={upperSymbol}
                 currentPrice={quote.currentPrice}
@@ -269,7 +269,7 @@ const StockDetail = () => {
             </div>
             
             <div>
-              <h3 className="text-sm font-medium text-gray-300 mb-3">Active Alerts</h3>
+              <h3 className="text-sm font-medium text-text-muted mb-3">Active Alerts</h3>
               <PriceAlertsList
                 alerts={symbolAlerts}
                 onAlertDeleted={handleAlertDeleted}

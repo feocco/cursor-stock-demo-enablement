@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useStockHistory } from '../../hooks/useStockData'
 import Button from '../atoms/Button'
@@ -61,6 +61,22 @@ const formatTooltipLabel = (dateValue, period) => {
 const StockChart = ({ symbol }) => {
   const [selectedRange, setSelectedRange] = useState('1m')
   const { history, loading, error, refresh } = useStockHistory(symbol, selectedRange)
+  
+  // Track theme by observing the 'dark' class on document root
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'))
+  
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'))
+    })
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    })
+    
+    return () => observer.disconnect()
+  }, [])
 
   const chartData = useMemo(() => {
     return history
@@ -86,7 +102,7 @@ const StockChart = ({ symbol }) => {
 
   if (loading) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-xl p-6">
         <div className="animate-pulse">
           <div className="h-8 bg-surface-raised rounded w-32 mb-4"></div>
           <div className="h-96 bg-surface-raised rounded"></div>
@@ -97,7 +113,7 @@ const StockChart = ({ symbol }) => {
 
   if (error) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
             <h2 className="text-xl font-semibold text-text">Price Chart</h2>
@@ -119,7 +135,7 @@ const StockChart = ({ symbol }) => {
           </div>
         </div>
         <div className="h-96 flex flex-col items-center justify-center text-center">
-          <p className="text-red-400 mb-4">Unable to load historical price data.</p>
+          <p className="text-loss mb-4">Unable to load historical price data.</p>
           <Button variant="outline" size="sm" onClick={refresh}>
             Retry
           </Button>
@@ -130,7 +146,7 @@ const StockChart = ({ symbol }) => {
 
   if (chartData.length === 0) {
     return (
-      <div className="bg-surface border border-border rounded-lg p-6">
+      <div className="bg-surface border border-border rounded-xl p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
             <h2 className="text-xl font-semibold text-text">Price Chart</h2>
@@ -161,10 +177,20 @@ const StockChart = ({ symbol }) => {
   const firstPrice = chartData[0]?.close || 0
   const lastPrice = chartData[chartData.length - 1]?.close || 0
   const isPositive = lastPrice >= firstPrice
-  const lineColor = isPositive ? '#10b981' : '#ef4444'
+  
+  // Theme-aware colors using #34 tokens - observes dark class on root
+  const lineColor = isPositive 
+    ? (isDark ? 'rgb(34 197 94)' : 'rgb(22 163 74)')  // gain token
+    : (isDark ? 'rgb(248 113 113)' : 'rgb(239 68 68)') // loss token
+  
+  const gridColor = isDark ? 'rgb(63 63 70)' : 'rgb(228 228 231)' // border token
+  const axisColor = isDark ? 'rgb(161 161 170)' : 'rgb(113 113 122)' // text-muted token
+  const tooltipBg = isDark ? 'rgb(24 24 27)' : 'rgb(255 255 255)' // surface token
+  const tooltipBorder = isDark ? 'rgb(63 63 70)' : 'rgb(228 228 231)' // border token
+  const tooltipText = isDark ? 'rgb(250 250 250)' : 'rgb(9 9 11)' // text token
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-6">
+    <div className="bg-surface border border-border rounded-xl p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-xl font-semibold text-text">Price Chart</h2>
@@ -188,16 +214,16 @@ const StockChart = ({ symbol }) => {
 
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} horizontal={true} vertical={false} />
           <XAxis
             dataKey="label"
-            stroke="#9ca3af"
-            tick={{ fill: '#9ca3af' }}
+            stroke={axisColor}
+            tick={{ fill: axisColor }}
             minTickGap={24}
           />
           <YAxis
-            stroke="#9ca3af"
-            tick={{ fill: '#9ca3af' }}
+            stroke={axisColor}
+            tick={{ fill: axisColor }}
             domain={['auto', 'auto']}
             width={92}
             tickFormatter={(value) => formatCurrency(value)}
@@ -205,10 +231,10 @@ const StockChart = ({ symbol }) => {
           <Tooltip
             labelFormatter={(_, payload) => payload?.[0]?.payload?.tooltipLabel || ''}
             contentStyle={{
-              backgroundColor: '#1f2937',
-              border: '1px solid #374151',
-              borderRadius: '8px',
-              color: '#fff',
+              backgroundColor: tooltipBg,
+              border: `1px solid ${tooltipBorder}`,
+              borderRadius: '12px',
+              color: tooltipText,
             }}
             formatter={(value, name) => [formatCurrency(Number(value)), name === 'close' ? 'Close' : name]}
           />

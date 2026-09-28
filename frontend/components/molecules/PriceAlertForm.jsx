@@ -40,17 +40,17 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-text-muted mb-2">
           Alert Condition
         </label>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => setCondition(AlertCondition.ABOVE)}
-            className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+            className={`flex-1 px-4 py-2 rounded-xl border transition-all duration-150 font-medium ${
               condition === AlertCondition.ABOVE
-                ? 'bg-green-600 border-green-500 text-white'
-                : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500'
+                ? 'bg-gain border-gain text-white shadow-sm'
+                : 'bg-surface-raised border-border text-text hover:border-border/60'
             }`}
           >
             Above
@@ -58,10 +58,10 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
           <button
             type="button"
             onClick={() => setCondition(AlertCondition.BELOW)}
-            className={`flex-1 px-4 py-2 rounded-lg border transition-colors ${
+            className={`flex-1 px-4 py-2 rounded-xl border transition-all duration-150 font-medium ${
               condition === AlertCondition.BELOW
-                ? 'bg-red-600 border-red-500 text-white'
-                : 'bg-gray-700 border-gray-600 text-gray-300 hover:border-gray-500'
+                ? 'bg-loss border-loss text-white shadow-sm'
+                : 'bg-surface-raised border-border text-text hover:border-border/60'
             }`}
           >
             Below
@@ -70,11 +70,11 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
       </div>
 
       <div>
-        <label htmlFor="targetPrice" className="block text-sm font-medium text-gray-300 mb-2">
+        <label htmlFor="targetPrice" className="block text-sm font-medium text-text-muted mb-2">
           Target Price
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted">
             $
           </span>
           <input
@@ -85,17 +85,17 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
             value={targetPrice}
             onChange={(e) => setTargetPrice(e.target.value)}
             placeholder="0.00"
-            className="w-full pl-8 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-8 pr-4 py-2 bg-surface-raised border border-border rounded-xl text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-transparent transition-all duration-150"
           />
         </div>
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="mt-1 text-xs text-text-muted">
           Current price: {formatCurrency(currentPrice)}
         </p>
       </div>
 
       {error && (
-        <div className="p-3 bg-red-900/20 border border-red-700 rounded-lg">
-          <p className="text-sm text-red-400">{error}</p>
+        <div className="p-3 bg-loss/10 border border-loss/20 rounded-xl">
+          <p className="text-sm text-loss">{error}</p>
         </div>
       )}
 

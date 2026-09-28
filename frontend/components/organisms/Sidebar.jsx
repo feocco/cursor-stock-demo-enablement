@@ -46,7 +46,7 @@ const Sidebar = () => {
   }, [watchlist, quotes])
 
   return (
-    <div className="w-80 bg-surface border-r border-border p-4 overflow-y-auto">
+    <div className="w-80 h-full bg-surface border-r border-border p-4 overflow-y-auto">
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-text">Watchlist</h2>
         {watchlist.length > 0 && (

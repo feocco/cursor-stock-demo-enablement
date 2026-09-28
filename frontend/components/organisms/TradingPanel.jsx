@@ -50,14 +50,14 @@ const TradingPanel = ({ symbol, currentPrice }) => {
   }
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-6">
+    <div className="bg-surface border border-border rounded-xl p-6">
       <h2 className="text-xl font-semibold text-text mb-6">Trade {symbol}</h2>
 
       {notification && (
-        <div className={`mb-4 p-4 rounded-lg ${
+        <div className={`mb-4 p-4 rounded-xl ${
           notification.type === 'success' 
-            ? 'bg-green-900 border border-green-700 text-green-100' 
-            : 'bg-red-900 border border-red-700 text-red-100'
+            ? 'bg-gain/10 border border-gain/20 text-gain' 
+            : 'bg-loss/10 border border-loss/20 text-loss'
         }`}>
           {notification.message}
         </div>
@@ -66,7 +66,7 @@ const TradingPanel = ({ symbol, currentPrice }) => {
       <div className="space-y-4 mb-6">
         <div className="bg-surface-raised rounded-lg p-4">
           <div className="text-text-muted text-sm mb-1">Available Cash</div>
-          <div className="text-text text-lg font-semibold">
+          <div className="text-text text-lg font-semibold tabular-nums">
             {formatCurrency(cash)}
           </div>
         </div>
@@ -77,7 +77,7 @@ const TradingPanel = ({ symbol, currentPrice }) => {
             {holding ? (
               <>
                 {formatNumber(holding.quantity)} {holding.quantity === 1 ? 'share' : 'shares'}
-                <div className="text-sm text-text-muted mt-1">
+                <div className="text-sm text-text-muted mt-1 tabular-nums">
                   Avg Price: {formatCurrency(holding.avgPrice)}
                 </div>
               </>
