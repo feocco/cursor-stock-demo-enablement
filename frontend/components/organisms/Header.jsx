@@ -5,6 +5,7 @@ import { usePortfolio } from '../../context/PortfolioContext'
 import SearchBar from '../molecules/SearchBar'
 import { formatCurrency } from '../../utils/calculations'
 import { useTheme } from '../../hooks/useTheme'
+import MarketStatus from '../atoms/MarketStatus'
 
 const Header = () => {
   const location = useLocation()
@@ -48,6 +49,8 @@ const Header = () => {
 
         <div className="flex items-center gap-4">
           <SearchBar />
+
+          <MarketStatus />
           
           <button
             onClick={toggleTheme}
@@ -79,6 +82,7 @@ const Header = () => {
           </Link>
           
           <div className="flex items-center gap-3">
+            <MarketStatus compact />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg text-text-muted hover:text-text hover:bg-surface-raised transition-all duration-150"
