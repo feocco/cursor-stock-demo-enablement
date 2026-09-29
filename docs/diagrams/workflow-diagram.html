@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehearsal workflow: ticket to pull request</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1d21;
+    --muted: #5b6470;
+    --line: #c9ced6;
+    --card: #f6f7f9;
+    --accent: #2563eb;
+    --accent-soft: #e6eefc;
+    --ok: #15803d;
+    --ok-soft: #e7f5ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111316;
+      --fg: #e8eaed;
+      --muted: #9aa3ae;
+      --line: #3a4049;
+      --card: #1b1e23;
+      --accent: #6ea0ff;
+      --accent-soft: #1c2740;
+      --ok: #4ade80;
+      --ok-soft: #15291d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 16px 48px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+  .flow { display: flex; flex-direction: column; align-items: center; }
+  .step {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 2px 12px;
+  }
+  .num {
+    grid-row: span 2;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .name { font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; }
+  .detail { color: var(--muted); font-size: 13.5px; }
+  .gate { border-color: var(--ok); background: var(--ok-soft); }
+  .gate .num { background: var(--ok); color: var(--bg); }
+  .badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--ok);
+    color: var(--bg);
+    font: 600 12px/1.6 inherit;
+    font-family: inherit;
+    vertical-align: 1px;
+  }
+  .arrow {
+    width: 2px; height: 22px;
+    background: var(--line);
+    position: relative;
+    margin: 0 0 6px;
+  }
+  .arrow::after {
+    content: "";
+    position: absolute;
+    left: -5px; bottom: -6px;
+    border: 6px solid transparent;
+    border-top: 7px solid var(--line);
+    border-bottom: 0;
+  }
+  .parallel {
+    width: 100%;
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .parallel-head {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 10px 4px;
+  }
+  .parallel-head .num { grid-row: auto; }
+  .parallel-head span { font-weight: 600; }
+  .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .lane {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .lane .name { display: block; margin-bottom: 2px; }
+  .note { color: var(--muted); font-size: 13px; margin: 8px 4px 0; }
+  .done { border-color: var(--accent); }
+  @media (max-width: 640px) {
+    .lanes { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Rehearsal workflow: ticket to pull request</h1>
+  <p class="sub">One story (SSIM-9: persist price alerts for the signed-in user), run end to end with repo skills and subagents.</p>
+
+  <div class="flow" role="list" aria-label="Workflow steps in order">
+    <div class="step" role="listitem">
+      <div class="num">1</div>
+      <div class="name">do-ticket</div>
+      <div class="detail">Read the story from pasted ticket content. Four acceptance criteria used as written.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step" role="listitem">
+      <div class="num">2</div>
+      <div class="name">checklist</div>
+      <div class="detail">create-implementation-checklist: prerequisites, backend, frontend, tests, edge cases, definition of done.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step" role="listitem">
+      <div class="num">3</div>
+      <div class="name">plan</div>
+      <div class="detail"><code>.cursor/plans/ssim-9.plan.md</code> with 4 todos (schema, API, UI, tests) and the <code>/api/v1/alerts</code> contract.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step gate" role="listitem">
+      <div class="num">4</div>
+      <div class="name">gate <span class="badge">approved</span></div>
+      <div class="detail">"Proceed with implementation?" Work started only after the plan file existed.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step" role="listitem">
+      <div class="num">5</div>
+      <div class="name">feature-implementer</div>
+      <div class="detail">Vertical slice: Prisma PriceAlert model and migration, authenticated alert routes, stock detail page on the server list. First test file: 7 passed.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="parallel" role="listitem">
+      <div class="parallel-head">
+        <div class="num">6</div>
+        <span>Three reviewers in parallel</span>
+      </div>
+      <div class="lanes">
+        <div class="lane">
+          <span class="name">code-reviewer</span>
+          <div class="detail">Read-only. 0 critical, 0 major. Minor findings fixed or covered.</div>
+        </div>
+        <div class="lane">
+          <span class="name">test-engineer</span>
+          <div class="detail">Added 404, 400, 401, and repeat-trigger cases. Focused file: 13 passed.</div>
+        </div>
+        <div class="lane">
+          <span class="name">api-security-auditor</span>
+          <div class="detail">0 critical. Cross-user reads and writes blocked. Alert JSON omits the owner id.</div>
+        </div>
+      </div>
+      <p class="note">Review fixes were applied to the same slice before validation.</p>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step" role="listitem">
+      <div class="num">7</div>
+      <div class="name">validate-implementation</div>
+      <div class="detail">4 of 4 acceptance criteria met. <code>npm test</code>: 11 suites, 110 tests passed. Lint: 0 errors.</div>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+
+    <div class="step done" role="listitem">
+      <div class="num">8</div>
+      <div class="name">pull request</div>
+      <div class="detail">Opened from a feature branch off <code>main</code>. Left open and unmerged.</div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
