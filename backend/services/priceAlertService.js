@@ -39,8 +39,10 @@ export const createAlert = async (userId, { symbol, condition, targetPrice }) =>
   }
 
   const price = Number(targetPrice);
-  if (!Number.isFinite(price) || price <= 0) {
-    throw new ValidationError('Target price must be a number greater than 0');
+  const scaled = price * 10000;
+  const hasAtMostFourDecimals = Number.isFinite(scaled) && Math.abs(scaled - Math.round(scaled)) < 1e-6;
+  if (!Number.isFinite(price) || price <= 0 || price > 1000000 || !hasAtMostFourDecimals) {
+    throw new ValidationError('Target price must be greater than 0, at most 1000000, with up to 4 decimal places');
   }
 
   const alert = await prisma.priceAlert.create({
@@ -73,19 +75,26 @@ export const deleteAlert = async (alertId, userId) => {
 };
 
 export const markAlertTriggered = async (alertId, userId) => {
-  const existing = await findAlertForUser(alertId, userId);
+  await findAlertForUser(alertId, userId);
 
-  if (existing.triggered) {
-    return toPublicAlert(existing);
-  }
-
-  const alert = await prisma.priceAlert.update({
-    where: { id: alertId },
+  const updated = await prisma.priceAlert.updateMany({
+    where: {
+      id: alertId,
+      userId,
+      triggered: false,
+    },
     data: {
       triggered: true,
       triggeredAt: new Date(),
     },
   });
 
-  return toPublicAlert(alert);
+  const alert = await prisma.priceAlert.findUnique({
+    where: { id: alertId },
+  });
+
+  return {
+    alert: toPublicAlert(alert),
+    changed: updated.count === 1,
+  };
 };

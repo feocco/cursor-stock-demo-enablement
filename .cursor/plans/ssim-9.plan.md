@@ -4,16 +4,16 @@ overview: Store each signed-in user's price alerts on the server and make the st
 todos:
   - id: schema
     content: Add a user-scoped PriceAlert model and migration
-    status: pending
+    status: completed
   - id: api
     content: Add authenticated create, list, delete, and mark-triggered alert routes
-    status: pending
+    status: completed
   - id: ui
     content: Point price alert utils, the hook, and the stock detail page at the server list
-    status: pending
+    status: completed
   - id: tests
     content: Cover create, list, and cross-user isolation
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -164,9 +164,9 @@ Alert JSON (no `userId`):
 | POST | `/api/v1/alerts` | `{ symbol, condition, targetPrice }` | 201 `{ success, data: { alert } }` | 400 invalid input, 401 |
 | GET | `/api/v1/alerts` | none | 200 `{ success, data: { alerts } }` | 401 |
 | DELETE | `/api/v1/alerts/:id` | path `id` uuid | 200 `{ success, message }` | 400, 401, 403, 404 |
-| PATCH | `/api/v1/alerts/:id` | `{ triggered: true }` | 200 `{ success, data: { alert } }` | 400, 401, 403, 404 |
+| PATCH | `/api/v1/alerts/:id` | `{ triggered: true }` | 200 `{ success, data: { alert, changed } }` | 400, 401, 403, 404 |
 
-`condition` is `ABOVE` or `BELOW`. `symbol` is 1–10 chars, letters, numbers, and dots, stored uppercased. `targetPrice` is a finite number greater than 0. List returns only rows for `req.user.id`, newest first. Delete and patch of another user's row return 403. A missing row returns 404.
+`condition` is `ABOVE` or `BELOW`. `symbol` is 1–10 chars, letters, numbers, and dots, stored uppercased. `targetPrice` is a finite number greater than 0, at most 1000000, with at most 4 decimal places. List returns only rows for `req.user.id`, newest first. Delete and patch of another user's row return 403. A missing row returns 404. `changed` is true only when this request set `triggered` from false to true.
 
 ### Assumption
 

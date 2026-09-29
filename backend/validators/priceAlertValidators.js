@@ -13,8 +13,14 @@ export const createPriceAlertValidator = [
     .isIn(['ABOVE', 'BELOW'])
     .withMessage('Condition must be ABOVE or BELOW'),
   body('targetPrice')
-    .isFloat({ gt: 0 })
-    .withMessage('Target price must be a number greater than 0'),
+    .isFloat({ gt: 0, max: 1000000 })
+    .withMessage('Target price must be greater than 0 and at most 1000000')
+    .custom((value) => {
+      const price = Number(value);
+      const scaled = price * 10000;
+      return Number.isFinite(scaled) && Math.abs(scaled - Math.round(scaled)) < 1e-6;
+    })
+    .withMessage('Target price must have at most 4 decimal places'),
 ];
 
 export const deletePriceAlertValidator = [

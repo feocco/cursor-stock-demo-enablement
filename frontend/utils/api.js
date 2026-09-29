@@ -309,6 +309,6 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ triggered: true }),
     });
-    return result.data.alert;
+    return result.data;
   },
 };

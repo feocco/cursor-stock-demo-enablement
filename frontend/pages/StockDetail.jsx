@@ -26,7 +26,7 @@ const StockDetail = () => {
   } = useStockNews(upperSymbol, 5)
   const { isInWatchlist, toggleWatchlist, isReady: watchlistReady, loading: watchlistLoading } = useWatchlist()
   
-  const quotes = quote ? { [upperSymbol]: quote } : {}
+  const quotes = quote?.symbol === upperSymbol ? { [upperSymbol]: quote } : {}
   const {
     alerts,
     loading: alertsLoading,

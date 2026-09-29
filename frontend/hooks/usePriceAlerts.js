@@ -74,6 +74,10 @@ export const usePriceAlerts = (quotes) => {
           setTriggeredAlerts((prev) => [...prev, { ...alert, currentPrice, triggeredAt: new Date() }])
         })
 
+        if (!cancelled) {
+          setError(null)
+        }
+
         if (!cancelled && triggered.length > 0) {
           await refreshAlerts()
         }

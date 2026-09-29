@@ -48,11 +48,11 @@ export const deleteAlert = async (req, res, next) => {
 export const markAlertTriggered = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const alert = await priceAlertService.markAlertTriggered(id, req.user.id);
+    const { alert, changed } = await priceAlertService.markAlertTriggered(id, req.user.id);
 
     res.status(200).json({
       success: true,
-      data: { alert },
+      data: { alert, changed },
     });
   } catch (error) {
     next(error);

@@ -90,7 +90,10 @@ export const checkAlerts = async (quotes, onAlertTriggered) => {
       const currentPrice = Number(quote.currentPrice);
 
       if (shouldTrigger(alert, currentPrice)) {
-        await markAlertTriggered(alert.id);
+        const result = await markAlertTriggered(alert.id);
+        if (!result?.changed) {
+          continue;
+        }
         showNotification(alert, currentPrice);
         triggeredAlerts.push({ ...alert, currentPrice });
 

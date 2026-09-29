@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Button from '../atoms/Button'
 import { AlertCondition, createAlert } from '../../utils/priceAlerts'
 import { formatCurrency } from '../../utils/calculations'
@@ -8,9 +8,13 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
   const [targetPrice, setTargetPrice] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const submittingRef = useRef(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (submittingRef.current) {
+      return
+    }
     setError('')
 
     const price = parseFloat(targetPrice)
@@ -30,6 +34,7 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
       return
     }
 
+    submittingRef.current = true
     setSubmitting(true)
     try {
       const alert = await createAlert(symbol, condition, price)
@@ -41,6 +46,7 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
     } catch (err) {
       setError(err.message || 'Failed to create alert')
     } finally {
+      submittingRef.current = false
       setSubmitting(false)
     }
   }
