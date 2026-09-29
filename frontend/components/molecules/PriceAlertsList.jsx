@@ -1,12 +1,24 @@
+import { useState } from 'react'
 import { AlertCondition, deleteAlert } from '../../utils/priceAlerts'
 import { formatCurrency } from '../../utils/calculations'
 import Button from '../atoms/Button'
 
-const PriceAlertsList = ({ alerts, onAlertDeleted }) => {
-  const handleDelete = (alertId) => {
-    deleteAlert(alertId)
-    if (onAlertDeleted) {
-      onAlertDeleted(alertId)
+const PriceAlertsList = ({ alerts = [], onAlertDeleted }) => {
+  const [error, setError] = useState('')
+  const [deletingId, setDeletingId] = useState(null)
+
+  const handleDelete = async (alertId) => {
+    setError('')
+    setDeletingId(alertId)
+    try {
+      await deleteAlert(alertId)
+      if (onAlertDeleted) {
+        await onAlertDeleted(alertId)
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to delete alert')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -21,6 +33,11 @@ const PriceAlertsList = ({ alerts, onAlertDeleted }) => {
 
   return (
     <div className="space-y-3">
+      {error && (
+        <div className="p-3 bg-loss/10 border border-loss/20 rounded-xl">
+          <p className="text-sm text-loss">{error}</p>
+        </div>
+      )}
       {alerts.map((alert) => {
         const isAbove = alert.condition === AlertCondition.ABOVE
         const conditionText = isAbove ? 'above' : 'below'
@@ -47,8 +64,9 @@ const PriceAlertsList = ({ alerts, onAlertDeleted }) => {
               variant="danger"
               size="sm"
               onClick={() => handleDelete(alert.id)}
+              disabled={deletingId === alert.id}
             >
-              Delete
+              {deletingId === alert.id ? 'Deleting...' : 'Delete'}
             </Button>
           </div>
         )

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStockQuote, useStockProfile, useStockNews } from '../hooks/useStockData'
 import { useWatchlist } from '../context/WatchlistContext'
@@ -10,7 +9,6 @@ import StockChart from '../components/organisms/StockChart'
 import PriceAlertForm from '../components/molecules/PriceAlertForm'
 import PriceAlertsList from '../components/molecules/PriceAlertsList'
 import { formatCurrency, formatPercentage } from '../utils/calculations'
-import { getAlertsForSymbol } from '../utils/priceAlerts'
 
 const StockDetail = () => {
   const { symbol } = useParams()
@@ -28,19 +26,27 @@ const StockDetail = () => {
   } = useStockNews(upperSymbol, 5)
   const { isInWatchlist, toggleWatchlist, isReady: watchlistReady, loading: watchlistLoading } = useWatchlist()
   
-  const [symbolAlerts, setSymbolAlerts] = useState(() => getAlertsForSymbol(upperSymbol))
-  const quotes = quote ? { [upperSymbol]: quote } : {}
-  const { permissionStatus, requestPermission, refreshAlerts } = usePriceAlerts(quotes)
+  const quotes = quote?.symbol === upperSymbol ? { [upperSymbol]: quote } : {}
+  const {
+    alerts,
+    loading: alertsLoading,
+    error: alertsError,
+    permissionStatus,
+    requestPermission,
+    refreshAlerts,
+  } = usePriceAlerts(quotes)
+  const symbolAlerts = alerts.filter(
+    (alert) => alert.symbol === upperSymbol && alert.triggered === false
+  )
 
   const inWatchlist = isInWatchlist(upperSymbol)
 
-  const handleAlertCreated = () => {
-    refreshAlerts()
-    setSymbolAlerts(getAlertsForSymbol(upperSymbol))
+  const handleAlertCreated = async () => {
+    await refreshAlerts()
   }
 
-  const handleAlertDeleted = () => {
-    setSymbolAlerts(getAlertsForSymbol(upperSymbol))
+  const handleAlertDeleted = async () => {
+    await refreshAlerts()
   }
 
   const getSentimentChipClasses = (sentiment) => {
@@ -259,6 +265,12 @@ const StockDetail = () => {
               </div>
             )}
             
+            {alertsError && (
+              <div className="mb-4 p-3 bg-loss/10 border border-loss/20 rounded-xl">
+                <p className="text-sm text-loss">{alertsError}</p>
+              </div>
+            )}
+
             <div className="mb-6">
               <h3 className="text-sm font-medium text-text-muted mb-3">Create New Alert</h3>
               <PriceAlertForm
@@ -270,10 +282,14 @@ const StockDetail = () => {
             
             <div>
               <h3 className="text-sm font-medium text-text-muted mb-3">Active Alerts</h3>
-              <PriceAlertsList
-                alerts={symbolAlerts}
-                onAlertDeleted={handleAlertDeleted}
-              />
+              {alertsLoading ? (
+                <p className="text-sm text-text-muted py-6 text-center">Loading alerts...</p>
+              ) : alertsError && alerts.length === 0 ? null : (
+                <PriceAlertsList
+                  alerts={symbolAlerts}
+                  onAlertDeleted={handleAlertDeleted}
+                />
+              )}
             </div>
           </div>
         </div>

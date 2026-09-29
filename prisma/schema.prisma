@@ -20,8 +20,24 @@ model User {
   updatedAt DateTime  @updatedAt
   watchlists Watchlist[]
   portfolio    Portfolio?
+  priceAlerts  PriceAlert[]
 
   @@map("users")
+}
+
+model PriceAlert {
+  id          String    @id @default(uuid())
+  userId      String
+  symbol      String
+  condition   String
+  targetPrice Float
+  triggered   Boolean   @default(false)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("price_alerts")
 }
 
 model Watchlist {
