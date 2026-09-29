@@ -154,20 +154,50 @@ const fetchFromFinnhub = async (path, params, apiKey) => {
   }
 };
 
-const getMockStockData = (symbol) => ({
-  'Global Quote': {
-    '01. symbol': symbol,
-    '02. open': '150.00',
-    '03. high': '155.00',
-    '04. low': '149.00',
-    '05. price': '152.50',
-    '06. volume': '1000000',
-    '07. latest trading day': new Date().toISOString().split('T')[0],
-    '08. previous close': '150.00',
-    '09. change': '2.50',
-    '10. change percent': '1.67%',
-  },
-});
+const getMockStockData = (symbol) => {
+  // Generate deterministic prices based on symbol
+  const seed = Array.from(symbol).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const basePrice = 100 + (seed % 200); // Base price between 100-300
+  
+  // Small bounded drift: up to 0.3% per 5-second interval using timestamp
+  const intervalsSinceEpoch = Math.floor(Date.now() / 5000);
+  const driftSeed = seed + intervalsSinceEpoch;
+  const driftPercent = ((driftSeed % 60) - 30) / 10000; // -0.3% to +0.3%
+  const currentPrice = basePrice * (1 + driftPercent);
+  
+  // Generate previousClose anchored to basePrice (not currentPrice) so it stays fixed
+  // Deterministic per symbol: roughly -3% to +3% different, mix of gainers and losers
+  const prevCloseSeed = seed * 17; // Different seed for prevClose
+  let prevCloseOffset = ((prevCloseSeed % 600) - 300) / 10000; // -3% to +3%
+  // Enforce minimum absolute offset of 0.25% to avoid near-zero changes
+  const minOffset = 0.0025;
+  if (Math.abs(prevCloseOffset) < minOffset) {
+    prevCloseOffset = prevCloseOffset >= 0 ? minOffset : -minOffset;
+  }
+  const previousClose = basePrice / (1 + prevCloseOffset);
+  
+  const change = currentPrice - previousClose;
+  const changePercent = previousClose !== 0 ? (change / previousClose) * 100 : 0;
+  
+  const open = previousClose + change * 0.2;
+  const high = Math.max(currentPrice, previousClose, open) + currentPrice * 0.01;
+  const low = Math.min(currentPrice, previousClose, open) - currentPrice * 0.01;
+  
+  return {
+    'Global Quote': {
+      '01. symbol': symbol,
+      '02. open': open.toFixed(2),
+      '03. high': high.toFixed(2),
+      '04. low': low.toFixed(2),
+      '05. price': currentPrice.toFixed(2),
+      '06. volume': '1000000',
+      '07. latest trading day': new Date().toISOString().split('T')[0],
+      '08. previous close': previousClose.toFixed(2),
+      '09. change': change.toFixed(2),
+      '10. change percent': `${changePercent.toFixed(2)}%`,
+    },
+  };
+};
 
 const getMockSearchData = (query) => ({
   bestMatches: [
