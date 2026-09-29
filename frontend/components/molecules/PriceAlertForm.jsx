@@ -7,8 +7,9 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
   const [condition, setCondition] = useState(AlertCondition.ABOVE)
   const [targetPrice, setTargetPrice] = useState('')
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -29,11 +30,18 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
       return
     }
 
-    const alert = createAlert(symbol, condition, price)
-    setTargetPrice('')
-    
-    if (onAlertCreated) {
-      onAlertCreated(alert)
+    setSubmitting(true)
+    try {
+      const alert = await createAlert(symbol, condition, price)
+      setTargetPrice('')
+
+      if (onAlertCreated) {
+        await onAlertCreated(alert)
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to create alert')
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -99,8 +107,8 @@ const PriceAlertForm = ({ symbol, currentPrice, onAlertCreated }) => {
         </div>
       )}
 
-      <Button type="submit" variant="primary" className="w-full">
-        Create Alert
+      <Button type="submit" variant="primary" className="w-full" disabled={submitting}>
+        {submitting ? 'Creating...' : 'Create Alert'}
       </Button>
     </form>
   )

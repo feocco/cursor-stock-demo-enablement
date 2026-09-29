@@ -11,6 +11,7 @@ import authRoutes from './routes/authRoutes.js';
 import stockRoutes from './routes/stockRoutes.js';
 import watchlistRoutes from './routes/watchlistRoutes.js';
 import portfolioRoutes from './routes/portfolioRoutes.js';
+import priceAlertRoutes from './routes/priceAlertRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -59,6 +60,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/stocks', stockRoutes);
 app.use('/api/v1/watchlists', watchlistRoutes);
 app.use('/api/v1/portfolio', portfolioRoutes);
+app.use('/api/v1/alerts', priceAlertRoutes);
 
 // 404 handler
 app.use((req, res) => {

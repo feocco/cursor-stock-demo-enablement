@@ -1,7 +1,5 @@
-// Price alert management for client-side alerts
-
-const ALERTS_KEY = 'stockAlerts';
-const CHECK_INTERVAL_MS = 30000; // Check every 30 seconds
+import { api } from './api';
+import { formatCurrency } from './calculations';
 
 export const AlertCondition = {
   ABOVE: 'ABOVE',
@@ -9,58 +7,25 @@ export const AlertCondition = {
 };
 
 /**
- * Get all active alerts from localStorage
+ * Load the signed-in user's alerts from the server.
  */
-export const getAlerts = () => {
-  try {
-    const stored = localStorage.getItem(ALERTS_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch (error) {
-    console.error('Failed to load alerts:', error);
-    return [];
-  }
-};
-
-/**
- * Save alerts to localStorage
- */
-const saveAlerts = (alerts) => {
-  try {
-    localStorage.setItem(ALERTS_KEY, JSON.stringify(alerts));
-    return true;
-  } catch (error) {
-    console.error('Failed to save alerts:', error);
-    return false;
-  }
+export const getAlerts = async () => {
+  const alerts = await api.getPriceAlerts();
+  return Array.isArray(alerts) ? alerts : [];
 };
 
 /**
  * Create a new price alert
  */
-export const createAlert = (symbol, condition, targetPrice) => {
-  const alerts = getAlerts();
-  
-  const newAlert = {
-    id: `${symbol}-${condition}-${targetPrice}-${Date.now()}`,
-    symbol: symbol.toUpperCase(),
-    condition,
-    targetPrice: Number(targetPrice),
-    createdAt: new Date().toISOString(),
-    triggered: false,
-  };
-
-  alerts.push(newAlert);
-  saveAlerts(alerts);
-  
-  return newAlert;
+export const createAlert = async (symbol, condition, targetPrice) => {
+  return api.createPriceAlert(symbol, condition, Number(targetPrice));
 };
 
 /**
  * Delete an alert by ID
  */
-export const deleteAlert = (alertId) => {
-  const alerts = getAlerts().filter(alert => alert.id !== alertId);
-  saveAlerts(alerts);
+export const deleteAlert = async (alertId) => {
+  await api.deletePriceAlert(alertId);
 };
 
 /**
@@ -83,17 +48,10 @@ const shouldTrigger = (alert, currentPrice) => {
 };
 
 /**
- * Mark an alert as triggered
+ * Persist that an alert has fired so a later reload does not fire it again.
  */
-const markAlertTriggered = (alertId) => {
-  const alerts = getAlerts();
-  const alert = alerts.find(a => a.id === alertId);
-  
-  if (alert) {
-    alert.triggered = true;
-    alert.triggeredAt = new Date().toISOString();
-    saveAlerts(alerts);
-  }
+const markAlertTriggered = async (alertId) => {
+  return api.markPriceAlertTriggered(alertId);
 };
 
 /**
@@ -102,7 +60,7 @@ const markAlertTriggered = (alertId) => {
 const showNotification = (alert, currentPrice) => {
   const conditionText = alert.condition === AlertCondition.ABOVE ? 'above' : 'below';
   const title = `${alert.symbol} Alert Triggered`;
-  const body = `${alert.symbol} is now ${conditionText} $${alert.targetPrice.toFixed(2)} (current: $${currentPrice.toFixed(2)})`;
+  const body = `${alert.symbol} is now ${conditionText} ${formatCurrency(alert.targetPrice)} (current: ${formatCurrency(currentPrice)})`;
 
   if ('Notification' in window && Notification.permission === 'granted') {
     new Notification(title, {
@@ -117,8 +75,8 @@ const showNotification = (alert, currentPrice) => {
  * Check all alerts against current prices
  */
 export const checkAlerts = async (quotes, onAlertTriggered) => {
-  const alerts = getAlerts().filter(alert => !alert.triggered);
-  
+  const alerts = (await getAlerts()).filter((alert) => !alert.triggered);
+
   if (alerts.length === 0) {
     return [];
   }
@@ -127,15 +85,15 @@ export const checkAlerts = async (quotes, onAlertTriggered) => {
 
   for (const alert of alerts) {
     const quote = quotes[alert.symbol];
-    
+
     if (quote && quote.currentPrice) {
       const currentPrice = Number(quote.currentPrice);
-      
+
       if (shouldTrigger(alert, currentPrice)) {
-        markAlertTriggered(alert.id);
+        await markAlertTriggered(alert.id);
         showNotification(alert, currentPrice);
         triggeredAlerts.push({ ...alert, currentPrice });
-        
+
         if (onAlertTriggered) {
           onAlertTriggered(alert, currentPrice);
         }
@@ -167,18 +125,20 @@ export const requestNotificationPermission = async () => {
 };
 
 /**
- * Clear all triggered alerts
+ * Remove triggered alerts for the signed-in user.
  */
-export const clearTriggeredAlerts = () => {
-  const alerts = getAlerts().filter(alert => !alert.triggered);
-  saveAlerts(alerts);
+export const clearTriggeredAlerts = async () => {
+  const alerts = await getAlerts();
+  const triggered = alerts.filter((alert) => alert.triggered);
+  await Promise.all(triggered.map((alert) => deleteAlert(alert.id)));
 };
 
 /**
  * Get active alerts for a specific symbol
  */
-export const getAlertsForSymbol = (symbol) => {
-  return getAlerts().filter(
-    alert => alert.symbol === symbol.toUpperCase() && !alert.triggered
+export const getAlertsForSymbol = async (symbol) => {
+  const alerts = await getAlerts();
+  return alerts.filter(
+    (alert) => alert.symbol === symbol.toUpperCase() && !alert.triggered
   );
 };

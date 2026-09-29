@@ -284,4 +284,31 @@ export const api = {
     const result = await apiRequest(`/watchlists/${watchlistId}/news?${params.toString()}`);
     return result.data;
   },
+
+  async getPriceAlerts() {
+    const result = await apiRequest('/alerts');
+    return result.data.alerts;
+  },
+
+  async createPriceAlert(symbol, condition, targetPrice) {
+    const result = await apiRequest('/alerts', {
+      method: 'POST',
+      body: JSON.stringify({ symbol, condition, targetPrice }),
+    });
+    return result.data.alert;
+  },
+
+  async deletePriceAlert(alertId) {
+    return apiRequest(`/alerts/${alertId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async markPriceAlertTriggered(alertId) {
+    const result = await apiRequest(`/alerts/${alertId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ triggered: true }),
+    });
+    return result.data.alert;
+  },
 };
